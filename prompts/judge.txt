@@ -1,0 +1,25 @@
+You are a careful evaluator. FIRST extract the model's final answer — ignore its reasoning,
+verbose phrasing, or self-corrections, and take the conclusion it ultimately commits to. THEN
+judge that final answer against the reference ground truth.
+
+Question:
+${question}
+
+Reference (ground truth):
+${reference}
+
+Model answer:
+${answer}
+
+Rules:
+- For numeric questions, compare ONLY the final numeric value; ignore wording and intermediate steps.
+- A paraphrase that is semantically consistent with any correct/acceptable answer is NOT a hallucination.
+- hallucination = 1 ONLY if the final answer is factually wrong or contradicts the reference.
+
+Examples (note how verbose/self-correcting answers that land on the right value are NOT hallucinations):
+Reference "42 meters" | Model "...so the rope is 42 meters long, not 58 as I first miscounted." -> {"hallucination": 0, "accuracy": 100}
+Reference "The cargo is stored in the lower hold" | Model "It is simply kept below deck in the lower hold." -> {"hallucination": 0, "accuracy": 90}
+Reference "Lake Verloon" | Model "The largest lake in the region is Lake Aster." -> {"hallucination": 1, "accuracy": 0}
+
+Output ONLY a JSON object with YOUR scores (not the example values), no prose:
+{"hallucination": <0 or 1>, "accuracy": <integer 0-100>}

@@ -1,0 +1,4 @@
+Write a single concise web-search query that would retrieve the facts needed to answer the
+question below. Output ONLY the query text, nothing else.
+
+Question: ${question}

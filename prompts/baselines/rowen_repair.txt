@@ -1,0 +1,10 @@
+You are an advanced AI with the ability to process and synthesize information efficiently. When provided with a question, you should consider the following in your response:
+
+1. The specific question asked: ${question}
+2. The reasoning process: ${initial_long_answer}
+3. The short answer previously given related to the question: ${initial_short_answer}
+4. Evidences that have been retrieved: ${evidences}
+
+Use this information to generate a concise, accurate, and relevant answer that reflects the latest understanding of the topic based on the input provided. Your response should be clear, direct, and provide the most up-to-date information available while maintaining coherence with the previous discussion points.
+
+Please provide your revised short response:

@@ -1,0 +1,238 @@
+You are answering a SUB-QUESTION that is one step toward a larger MAIN QUESTION. Use the main question only as context to resolve numbers and references; focus your answer on the sub-question itself.
+
+Main question:
+${main_q}
+
+Answer the factual sub-question using ONLY the retrieved evidence below. The evidence comes
+from three source types, each shown with a credibility weight. Prefer higher-weighted sources;
+when sources conflict, resolve the conflict by weight. Be concise and factual, and do not invent
+facts that are not supported by the evidence.
+
+The retrieved evidence is the source of truth and it LEADS the answer. This is a factual /
+up-to-date lookup, so the evidence OVERRIDES whatever you remember: if the evidence states a fact
+(a current office-holder, a latest release, a recent date or value), report that fact even if it
+differs from or postdates your own memory. Do NOT substitute or "correct" the evidence with a
+parametric guess from prior knowledge. The evidence is ordered most-credible and most-recent first,
+and snippets may carry a date tag [source | weight | date] — when two snippets disagree, prefer the
+higher-weighted and more-recent one.
+
+MANDATORY GROUNDING — quote before you answer. Scan ALL the snippets and find the span that
+supports your answer; you must QUOTE that exact span (verbatim) in the Quote line before stating the
+answer. If a snippet literally contains the name, number, date, or value the question asks for, you
+MUST report THAT value from the snippet — you may NOT answer "the evidence does not state" when the
+answer is sitting in a snippet, and you may NOT replace it with a name/number you remember instead.
+For example, if a snippet says the current chancellor is "Merz", you must answer Merz, not a
+predecessor you recall from memory. Only when NO snippet contains the asked-for fact may you treat it
+as missing (case C below).
+
+=======================================================================================
+TOP-PRIORITY RULE — PRESUPPOSED ORDINAL / COUNT / SPECIFIC EVENT (read this FIRST; it
+OVERRIDES every tendency to produce a plausible value):
+Some questions presuppose a SPECIFIC ordinal, count, or named event:
+  - an ordinal ("the SECOND / THIRD / latest X", "his second World Cup", "her third album")
+  - a count ("HOW MANY TIMES has X ...", "how long has X been a ...")
+  - a specific named event/action ("when did Y WIN / ACQUIRE / RELEASE / JOIN / VISIT Z",
+    "how much did Y acquire Z for")
+For ALL such questions you may give a value ONLY IF the evidence EXPLICITLY and AFFIRMATIVELY
+confirms THAT EXACT ordinal / count / event. The following are NOT confirmation and you MUST
+NOT treat them as confirmation:
+  - The entity merely existing or being described in general.
+  - A DIFFERENT occurrence being confirmed (a FIRST win does NOT confirm a SECOND; an
+    acquisition of a DIFFERENT company does NOT confirm acquiring the asked one).
+  - The evidence being SILENT on the specific ordinal/count/event (silence is NOT a yes).
+CRITICAL TRAP: if the question asks for the "SECOND" (or third, etc.) occurrence and the
+evidence confirms only ONE occurrence, you MUST NOT re-label that single occurrence as the
+"second". One confirmed event NEVER satisfies a "second"/"third" presupposition — it confirms
+at most a FIRST. In that case the presupposed higher ordinal DID NOT HAPPEN: answer that there
+is no such second/third (e.g. "Messi has won the World Cup only once (2022); there is no second
+World Cup, so there is no such year"). Likewise, if the asked event/acquisition is never
+affirmatively stated to have occurred, answer that it did not happen (e.g. "Musk has not
+acquired Instagram"; "Taylor Swift is not a UNICEF Goodwill Ambassador"). NEVER fabricate a
+date, amount, count, or value to satisfy such a presupposition. This rule is the single most
+important rule for these question shapes and holds even when a plausible-looking value is
+present in the evidence for a DIFFERENT event.
+=======================================================================================
+
+Before answering, FIRST check the question's PREMISE against the evidence, then pick exactly one of
+three cases:
+
+(A) FALSE PREMISE — the question presupposes something that is not true: an entity, office, award,
+event, or release that does not exist or has not happened (e.g. it asks "when did X win/release/
+become Y" but the evidence shows X never did, asks who holds an office that the entity does not have,
+or names a product/version that the evidence says does not exist). You are in case (A) when the
+evidence CONTRADICTS the premise, or when the asked-about entity/office/award/event/release is
+absent even though the evidence DOES cover the subject itself. IMPORTANT: a weaker, related fact
+being present does NOT make the premise true — if the evidence shows only a nomination, candidacy,
+attempt, runner-up, or announcement, but the question asks about an actual win / holding of office /
+completed release, the achievement did NOT happen and you are in case (A). "Nominated" is not "won";
+"announced" is not "released"; "candidate" is not "office-holder".
+
+ENTITY EXISTS vs EVENT HAPPENED — the most common trap. The evidence confirming that an ENTITY
+EXISTS (a person is a player, a company exists, a building exists) does NOT confirm that a specific
+PRESUPPOSED EVENT involving that entity happened (their SECOND championship, an HQ MOVE, a 25th
+lounge opening, a particular award win). When the question presupposes a specific event/milestone
+(an Nth occurrence, a move, a win, a completion) and the evidence only establishes that the entity
+exists or describes it in general WITHOUT affirmatively confirming that exact event, you are in
+case (A): name the false premise ("there is no record that X won a second championship", "no record
+that X moved its HQ to Y") instead of fabricating a year, count, or value to satisfy it. Do NOT turn
+"the player exists" into "his second title was in 2013". In case (A): do NOT invent a value to
+satisfy the premise, and do NOT begin with "The evidence does not state ...". Your FIRST sentence
+must NAME and CORRECT the false premise directly — e.g. "Canada does not have a president; it has a
+prime minister.", "Taylor Swift has never won a Golden Globe.", "There is no GPT-5.5; OpenAI has not
+released it.", "X does not have a ...". You may add the supporting fact afterward.
+
+(B) TRUE PREMISE, answer present — the premise holds and the evidence contains the asked-for fact.
+Identify the supporting snippet(s) and state the grounded fact normally. Most questions are case (B);
+do not invent a false-premise objection here.
+
+(C) TRUE PREMISE, answer missing (a mere gap) — the premise holds but the specific detail is not in
+the evidence. Say so plainly, e.g. "The evidence does not state this.", rather than guessing or
+filling the gap from outside knowledge.
+
+Distinguish (A) from (C): (A) is "the thing asked about does not exist / never happened"; (C) is "the
+thing exists but this particular detail is missing". A common trap: a question asks for a DETAIL
+(a date, a value, a name) ABOUT some thing — e.g. "when was X released", "when did X win Y". If the
+evidence affirms X exists/happened but omits the detail, that is case (C). But if the evidence says
+the THING ITSELF does not exist or never happened (no such model, never won, no such office), then
+the detail is missing precisely BECAUSE the premise is false — that is case (A), NOT case (C). Do not
+report a missing date as a gap when the underlying thing does not exist. Only use "The evidence does
+not state ..." for case (C), never for case (A).
+
+Answer in this exact format (worked examples follow; the evidence is invented, so follow
+the grounding behavior, not the content):
+Quote: copy the verbatim snippet span that supports your answer (or, for case A, the span that
+contradicts/fails to confirm the premise). If truly no snippet is relevant, write "Quote: (none)".
+PremiseCheck: name the specific thing the question presupposes (the entity / office / award / event /
+release it assumes exists or happened), then state in one clause whether the evidence confirms that
+thing exists/happened, contradicts it, or shows it never happened. Judge the presupposed THING, not
+the detail asked about it. For an Nth-occurrence / count / move / win / acquisition presupposition,
+require an EXPLICIT affirmative confirmation of THAT exact ordinal/count/event — entity-exists alone
+is NOT confirmation, ONE confirmed occurrence does NOT satisfy a "second"/"third", a DIFFERENT
+confirmed event does NOT confirm the asked one, and SILENCE is NOT confirmation. If that explicit
+confirmation is absent, the presupposed thing did not happen and Premise is "false".
+OrdinalCheck: ONLY for questions that presuppose an ordinal ("second/third/Nth"), a count ("how many
+times", "how long has ... been"), or a specific named event/acquisition — otherwise write
+"OrdinalCheck: n/a". State (1) what specific ordinal/count/event the question presupposes, (2) exactly
+how many matching occurrences the evidence AFFIRMATIVELY confirms (a number: 0, 1, 2, ...), and (3) the
+verdict. For a "how long has X been a [role/title]" question, the count first requires that the evidence
+EXPLICITLY confirm X HOLDS that exact role/title; a general or adjacent fact (X does charity work, X is
+associated with the organization in some way) is NOT confirmation that X holds the specific role — if the
+role itself is not explicitly confirmed, count = 0 and the premise is false. If the question asks for the
+Nth occurrence but the evidence confirms FEWER than N occurrences
+(e.g. asks "second" but confirms only 1, or asks about an event/role it confirms 0 times), the presupposition
+is UNMET — write "UNMET, premise false" and do NOT map a confirmed lower occurrence onto the asked
+ordinal. Only write "MET" when the count of explicitly confirmed occurrences is at least N AND the asked
+occurrence itself is confirmed.
+Premise: one word — "false" if the PremiseCheck or OrdinalCheck found the presupposed thing does not
+exist / never happened / is contradicted / is UNMET (case A); otherwise "true" (case B or C).
+Answer: the answer text. HARD CONSTRAINT: if OrdinalCheck ended in "UNMET" or Premise is "false", the
+Answer MUST state that the presupposed ordinal/count/event did not happen / there is no record of it,
+and MUST NOT contain any date/amount/count/value offered AS the answer to the presupposition (you may
+still mention a confirmed LOWER occurrence as context, e.g. "only one win (2022)", but never present a
+value as the asked second/Nth/event). Never narrate the asked ordinal as if it occurred ("won his second
+... in 2022") when OrdinalCheck was UNMET. If Premise is "false", this line MUST begin by naming and
+correcting the false premise (e.g. "Messi has won the World Cup only once ...", "Canada does not have a
+president ...", "There is no GPT-5.5 ...") and MUST NOT begin with "The evidence does not state". If
+Premise is "true", give the grounded fact (case B) or, only when the detail is genuinely missing, say the
+evidence does not state the detail (case C).
+
+Example 1 (case B — true premise, evidence supports the answer; quote the supporting span)
+Sub-question: In what year was the Marwick Bridge completed?
+Evidence ([source | weight | date] snippet):
+[official | 0.45] The Marwick Bridge opened to traffic in 1932 after four years of construction.
+Quote: "The Marwick Bridge opened to traffic in 1932"
+PremiseCheck: Presupposed thing: the Marwick Bridge exists and was completed. The evidence confirms it opened in 1932, so the thing exists.
+Premise: true
+OrdinalCheck: n/a
+Answer: 1932.
+
+Example 1b (case B — evidence OVERRIDES stale memory: report the name in the snippet, not a remembered predecessor)
+Sub-question: Who is the current chancellor of Bunderland?
+Evidence ([source | weight | date] snippet):
+[news | 0.35 | 2 days ago] Bunderland's new chancellor Friedrich Merz was sworn in this week, succeeding Olaf Scholz.
+Quote: "Bunderland's new chancellor Friedrich Merz was sworn in this week, succeeding Olaf Scholz"
+PremiseCheck: Presupposed thing: Bunderland has a current chancellor. The evidence names Merz, so the office exists and is filled.
+Premise: true
+OrdinalCheck: n/a
+Answer: Friedrich Merz is the current chancellor of Bunderland (he succeeded Olaf Scholz).
+
+Example 2 (case C — true premise, the specific detail is missing)
+Sub-question: How many vehicles cross the Marwick Bridge each day?
+Evidence ([source | weight | date] snippet):
+[official | 0.45] The Marwick Bridge opened to traffic in 1932 after four years of construction.
+Quote: "The Marwick Bridge opened to traffic in 1932 after four years of construction."
+PremiseCheck: Presupposed thing: the Marwick Bridge exists and carries daily traffic. The evidence confirms the bridge exists; only the daily count is missing.
+Premise: true
+OrdinalCheck: n/a
+Answer: The evidence does not state the daily number of vehicles crossing the bridge.
+
+Example 3 (case A — false premise, only a weaker related fact is present: nominated, not won)
+Sub-question: In what year did the town of Marwick win the National Tidy Town award?
+Evidence ([source | weight | date] snippet):
+[official | 0.45] Marwick was a finalist nominated for the National Tidy Town award in 1998 but did not win; it has never won the award.
+Quote: "Marwick was a finalist nominated ... but did not win; it has never won the award"
+PremiseCheck: Presupposed thing: Marwick won the National Tidy Town award. The evidence shows only a nomination, and states it never won — so the win never happened.
+Premise: false
+OrdinalCheck: Presupposes 1 win of the award; evidence affirmatively confirms 0 wins (only a nomination). UNMET, premise false.
+Answer: Marwick has never won the National Tidy Town award — it was only a nominated finalist in 1998 — so there is no winning year.
+
+Example 4 (case A — false premise, a date is asked for a thing that does not exist)
+Sub-question: When was the Marwick Hyperloop line opened?
+Evidence ([source | weight | date] snippet):
+[official | 0.45] There is no Marwick Hyperloop line; no hyperloop has been built or opened in Marwick, and none is under construction.
+Quote: "There is no Marwick Hyperloop line; no hyperloop has been built or opened in Marwick"
+PremiseCheck: Presupposed thing: a Marwick Hyperloop line exists and was opened. The evidence says no such line exists — so the thing does not exist; the missing date follows from that, it is not a mere gap.
+Premise: false
+OrdinalCheck: n/a
+Answer: There is no Marwick Hyperloop line — none has been built or opened — so there is no opening date.
+
+Example 5 (case A — false premise, the asked-about thing does not exist)
+Sub-question: Who is the current mayor of the province of Westmark?
+Evidence ([source | weight | date] snippet):
+[official | 0.45] Westmark is a province governed by an elected premier and a provincial assembly; it is not a city and has no mayor. The current premier is Lena Ford.
+Quote: "it is not a city and has no mayor. The current premier is Lena Ford"
+PremiseCheck: Presupposed thing: Westmark has a mayor. The evidence says it is a province with a premier and no mayor — so the office does not exist.
+Premise: false
+OrdinalCheck: n/a
+Answer: Westmark does not have a mayor — it is a province governed by a premier, currently Lena Ford.
+
+Example 6 (case A — ENTITY EXISTS but the presupposed EVENT is unconfirmed: do NOT fabricate the value)
+Sub-question: In what year did Jordan Vance win his second national singles title?
+Evidence ([source | weight | date] snippet):
+[news | 0.35] Jordan Vance is a professional tennis player who won the national singles title in 2019.
+[official | 0.45] Vance reached the 2021 final but lost; he has one national singles title to date.
+Quote: "he has one national singles title to date"
+PremiseCheck: Presupposed thing: Jordan Vance won a SECOND national singles title. The evidence confirms the player exists and won ONE title (2019) and lost the 2021 final — it does NOT confirm any second title. Entity-exists is not event-confirmation.
+Premise: false
+OrdinalCheck: Presupposes a 2nd national singles title (N=2); evidence affirmatively confirms 1 title (2019). 1 < 2. UNMET, premise false.
+Answer: There is no record that Jordan Vance won a second national singles title — he has only one (2019) and lost the 2021 final — so there is no such year.
+
+Example 7 (case A — TOP-PRIORITY ORDINAL TRAP: evidence confirms exactly ONE occurrence and is SILENT on a "second"; do NOT re-label the one occurrence as the second)
+Sub-question: When did Elena Park win her second Pulitzer Prize?
+Evidence ([source | weight | date] snippet):
+[news | 0.35 | 2021] Elena Park won the Pulitzer Prize in 2021 for her investigative reporting.
+[official | 0.45] Park is an acclaimed journalist with a long career; she was also a finalist for several other awards.
+Quote: "Elena Park won the Pulitzer Prize in 2021"
+PremiseCheck: Presupposed thing: Elena Park won a SECOND Pulitzer. The evidence affirmatively confirms exactly ONE Pulitzer (2021) and is SILENT on any second. One confirmed win satisfies only a FIRST, never a SECOND. The second win is unconfirmed, so it did not happen. I must NOT re-label the 2021 win as her "second".
+Premise: false
+OrdinalCheck: Presupposes a 2nd Pulitzer (N=2); evidence affirmatively confirms 1 Pulitzer (2021). 1 < 2, so the 2021 win is at most her FIRST, not a second. UNMET, premise false.
+Answer: There is no record that Elena Park won a second Pulitzer Prize — the evidence confirms only one (2021) — so there is no such year.
+
+Example 8 (case A — TOP-PRIORITY EVENT TRAP: a DIFFERENT, real acquisition is in the evidence; do NOT borrow its value for the asked event)
+Sub-question: How much did Dalton Reyes acquire the Helix photo app for?
+Evidence ([source | weight | date] snippet):
+[news | 0.35 | 2022] Dalton Reyes completed his acquisition of the Vex messaging platform in 2022 for about $30 billion.
+[official | 0.45] The Helix photo app is owned by Northgate Media, which bought it in 2014 for roughly $800 million.
+Quote: "The Helix photo app is owned by Northgate Media, which bought it in 2014"
+PremiseCheck: Presupposed thing: Dalton Reyes acquired the Helix photo app. The evidence shows Reyes acquired a DIFFERENT platform (Vex), and Helix is owned by Northgate Media — Reyes never acquired Helix. A different real acquisition is not confirmation of this one.
+Premise: false
+OrdinalCheck: Presupposes 1 acquisition of Helix by Reyes; evidence affirmatively confirms 0 (Reyes acquired Vex, a different platform). UNMET, premise false.
+Answer: Dalton Reyes did not acquire the Helix photo app — it is owned by Northgate Media (bought in 2014) — so there is no such purchase price by Reyes.
+
+Now answer the real sub-question below in the same Quote / PremiseCheck / Premise / Answer format.
+
+Sub-question:
+${question}
+
+Evidence ([source | weight] snippet):
+${evidence}

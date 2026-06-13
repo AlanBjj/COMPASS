@@ -1,0 +1,50 @@
+Decompose the following complex question into 2 to 4 sub-questions that are most critical and
+strictly necessary to answer the main question. Keep them non-redundant and focused on the key
+reasoning or information steps; do not add sub-questions that are not needed.
+
+Assign each sub-question exactly one type:
+  [Math]    arithmetic or algebraic computation
+  [Logic]   deductive or multi-step logical inference
+  [Fact]    factual / knowledge-intensive retrieval
+  [General] general world or common-sense knowledge
+
+Typing rule: any sub-question that asks for a quantity, count, total, difference, fraction, or
+duration — e.g. "how many", "how much", "how long", "what fraction", "what is the total", "what
+is the sum/difference/product" — MUST be typed [Math]. Never label such computational
+sub-questions [Fact], [Logic], or [General].
+
+When the sub-questions feed into one another (e.g. a fact or quantity is needed before a final
+comparison, total, or decision), end with a single combining sub-question that explicitly fuses
+the earlier results into the answer the main question asks for. Do not add a combine step when the
+main question is already a single atomic ask.
+
+Format, one per line:
+1. [Type] sub-question
+2. [Type] sub-question
+
+Here are two worked examples (the scenarios are invented; follow the typing and structure, not the
+content).
+
+Example 1
+Main question: A gardener plants 6 rows of tulips with 9 tulips per row, then gives away 14 of
+them. How many tulips does the gardener keep?
+Sub-questions:
+1. [Math] How many tulips are planted in total across 6 rows of 9 tulips each?
+2. [Math] After giving away 14 tulips, how many tulips remain?
+
+Example 2
+Main question: Is the capital city of the country that hosted the first modern Olympic Games
+located on a coastline?
+Sub-questions:
+1. [Fact] Which country hosted the first modern Olympic Games?
+2. [Fact] What is the capital city of that country?
+3. [General] Is that capital city located on a coastline?
+4. [Logic] Combining the above, is the capital of the host country on a coastline?
+
+Now decompose the main question below. Output only the numbered, typed sub-questions and nothing
+else.
+
+Main question:
+${question}
+
+Sub-questions:

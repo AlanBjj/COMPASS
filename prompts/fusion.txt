@@ -1,0 +1,176 @@
+You are answering the MAIN QUESTION below. You must solve it yourself, with full step-by-step
+reasoning, exactly as if you were solving it from scratch.
+
+Main question: ${main_q}
+
+The following are draft sub-answers to related sub-questions. They are REFERENCE ONLY: they may be
+incomplete, off-topic, or wrong. Do NOT just stitch them together, and do NOT copy a final number
+from them. You must derive the answer yourself from the main question. Use a sub-answer only if
+your own reasoning independently confirms it.
+
+Reference sub-answers ([weight] sub-question -> sub-answer):
+${evidence}
+
+Answer in this exact format:
+
+Reasoning: work through the main question yourself, step by step. FIRST, state the main question's
+PRESUPPOSITION (what it takes for granted to exist or have happened) and check, against the
+sub-answers, whether that presupposition is actually substantiated — see the FALSE PREMISE rules
+below; if it is not, say so explicitly here before going further. THEN, if the premise holds, state
+each quantity and each calculation explicitly, using only the facts in the main question. Do not skip
+steps. Re-check each step before moving on.
+Final answer: <the answer to the main question — if the presupposition was found unsubstantiated, this
+MUST begin by stating the premise is false (there is no such X / X did not happen), not a value>
+
+If, and ONLY if, the main question is a genuine yes/no, true/false, or
+"did/does/do/is/are/was/were/can/could/would/should/has/have/will..."-style question — one that
+asks whether something is the case — the text after "Final answer:" MUST BEGIN with an explicit
+"Yes" or "No" (or "True"/"False"), immediately followed by the justification. Never leave such a
+verdict implicit. For every OTHER kind of question do NOT begin with "Yes"/"No"/"True"/"False" —
+just give the answer. In particular, a numeric question (how many / how much / how long / what is
+the total / what is the sum / what fraction / what is the value / a question whose answer is a
+quantity) must end with the number and must NEVER begin with "Yes" or "No".
+
+The "Final answer:" line must never be empty: it must state the concrete answer (the number, name,
+or verdict). If you are about to leave it blank, restate the last concrete conclusion from your
+reasoning instead.
+
+When the sub-answers are factual / retrieval-based (i.e. grounded in retrieved external evidence
+rather than pure calculation), trust them over your own prior knowledge: if a confident,
+evidence-backed sub-answer gives a specific fact, do NOT override it with a parametric guess from
+memory. Reserve independent re-derivation for calculations and logical steps, where the reasoning
+(not external memory) is the source of truth. If the sub-answers say the evidence is insufficient,
+say so rather than fabricate a fact.
+
+=======================================================================================
+TOP-PRIORITY RULE — PRESUPPOSED ORDINAL / COUNT / SPECIFIC EVENT (this OVERRIDES any
+tendency to output a plausible value; it is the single most important rule for these shapes):
+If the main question presupposes a SPECIFIC ordinal ("the SECOND / THIRD / latest X"), a
+COUNT ("HOW MANY TIMES has X ...", "how long has X been a ..."), or a specific named
+event/action ("when did Y WIN / ACQUIRE / RELEASE / JOIN / VISIT Z", "how much did Y acquire
+Z for"), you may give a value ONLY IF the sub-answers EXPLICITLY and AFFIRMATIVELY confirm THAT
+EXACT ordinal / count / event. NONE of the following counts as confirmation:
+  - the entity merely existing or being described in general;
+  - a DIFFERENT occurrence being confirmed (a FIRST win does NOT confirm a SECOND; an
+    acquisition of a DIFFERENT company does NOT confirm acquiring the asked one);
+  - the sub-answers being SILENT on the specific ordinal/count/event.
+CRITICAL: if the question asks for the "SECOND" (or third, etc.) and the sub-answers confirm
+only ONE occurrence, you MUST NOT re-label that single occurrence as the "second" — one
+confirmed event satisfies at most a FIRST, never a second. The presupposed higher ordinal did
+NOT happen. Likewise, if the asked event/acquisition is never affirmatively confirmed, it did
+NOT happen. In all these cases the premise is FALSE: state that there is no such second/third,
+no such event, no such record (e.g. "Messi has won the World Cup only once, so there is no
+second World Cup"; "Musk has not acquired Instagram"). NEVER fabricate a date, amount, count,
+or value to satisfy such a presupposition, even when a plausible value for a DIFFERENT event
+appears in the sub-answers.
+=======================================================================================
+
+FALSE PREMISE: the main question may presuppose something untrue — an entity, office, award, event,
+release, or occurrence that does not exist or has not happened (e.g. asking when someone won an award
+they never won, who holds an office that does not exist, when something was released that has not been,
+what year an event happened that never happened, or why X is the case when X is not the case).
+
+Before writing the Final answer, FIRST re-examine the main question's PRESUPPOSITION against the
+sub-answers. Make the presupposition explicit: a "what YEAR did X happen" question presupposes that X
+HAPPENED; an "X's SECOND <thing>" question presupposes X has at least TWO; a "when did X move/join/win"
+question presupposes X moved/joined/won; a "why is X a part of Y" question presupposes X IS part of Y.
+Then ask: do the sub-answers ACTUALLY SUBSTANTIATE that presupposition? They substantiate it only if
+they affirmatively confirm the specific presupposed entity/event itself — not merely a RELATED fact.
+Sub-answers that describe the subject in general (the teams someone played for, where a company is
+currently based, the broader history of two countries) but never confirm the specific presupposed
+event (an actual championship, an actual move to that city, an actual part-of relationship) do NOT
+substantiate the premise. Sub-answers that are INTERNALLY CONTRADICTORY or mutually inconsistent on
+the core fact (e.g. one sub-answer says an event happened in different years, or a "combine" sub-answer
+has to adjudicate between conflicting "reasoning chains" to pick a value) are a strong signal of
+fabrication and likewise do NOT substantiate the premise — do not treat a value invented to resolve a
+contradiction as a confirmed fact. If the sub-answers fail to confirm the presupposition — they have no
+record of it, are vague, contradictory, or mutually inconsistent on the core fact, or only establish a
+related-but-different fact — then the premise is FALSE.
+
+When the premise is false, your Final answer must BEGIN by EXPLICITLY naming and correcting it — state
+plainly, as the first clause, that the thing does not exist or has not occurred (e.g. "Canada does not
+have a president; it has a prime minister ...", "There is no such ...", "No human has landed on Mars,
+so there is no such year ...", "X has never won a championship, so there is no second one ...", "Meta
+has not moved its headquarters to Austin ...", "Ireland is not a part of England ..."). Do NOT invent a
+year, value, name, or date to satisfy the premise; do NOT answer "Yes" to a presupposed event the
+sub-answers never confirmed; do NOT bury the correction after an affirmative-sounding answer; and do
+NOT rationalize or explain a false premise as if it were true.
+
+GUARDRAIL (read carefully — do NOT over-negate): flag a false premise ONLY when the presupposition is
+genuinely unsubstantiated or contradicted by the sub-answers. If the sub-answers DO confirm the
+presupposed fact (the event really happened, the entity really exists, the relationship really holds),
+the premise is TRUE: produce the real, grounded answer and do NOT raise any false-premise objection.
+Never deny a real event, person, or computation. A normal true-premise question — including a
+multi-part one whose sub-answers supply real dates/quantities that combine into the answer — must be
+fused normally into its real result.
+
+Here is one worked example (the scenario is invented; note how the model re-derives the answer and
+overrides a wrong reference sub-answer instead of copying it):
+
+Example
+Main question: A shelf holds 8 boxes, and each box contains 6 jars. If 10 jars are removed, how
+many jars remain on the shelf?
+Reference sub-answers ([weight] sub-question -> sub-answer):
+[0.5] How many jars are on the shelf in total? -> There are 8 + 6 = 14 jars.
+[0.5] After removing 10 jars, how many remain? -> 14 - 10 = 4 jars remain.
+Reasoning: The reference total is wrong — the boxes multiply, they do not add. Total jars = 8 * 6 =
+48. Removing 10 leaves 48 - 10 = 38. I do not trust the reference value of 14.
+Final answer: 38 jars remain on the shelf.
+
+Here is a second worked example (also invented), showing the false-premise check on a decomposed
+question whose sub-answers only describe RELATED facts and CONTRADICT one another on the core fact —
+note how an affirmative-looking "combine" sub-answer that had to adjudicate conflicting chains is NOT
+treated as confirmation:
+
+Example
+Main question: What year did Dana Reeves win her second Olympic gold medal in archery?
+Reference sub-answers ([weight] sub-question -> sub-answer):
+[0.4] Who is Dana Reeves? -> Dana Reeves is a competitive archer who has appeared at the Olympics.
+[0.3] In which years did Dana Reeves win Olympic gold? -> She won her first gold in 2008 with Team USA and her second in 2016.
+[0.3] Combining the above, what year did Dana Reeves win her second Olympic gold? -> The two reasoning chains disagree: the forward chain concludes 2012 while the backward chain concludes 2016; the forward chain seems more reliable, so the answer is 2012.
+Reasoning: The question presupposes Dana Reeves won at least TWO Olympic gold medals. The sub-answers
+only establish the RELATED fact that she is an archer who appeared at the Olympics; the specific
+medal claims are mutually inconsistent (2008/2016 in one, 2012 vs 2016 in another) and the combine
+step had to ADJUDICATE between conflicting chains to invent a value. That contradiction is a clear
+sign of fabrication, so none of this substantiates the presupposition. The premise is false; I must
+not output any of these years.
+Final answer: There is no such year — there is no consistent record that Dana Reeves won any Olympic
+gold medal in archery, let alone a second one, so the question's premise is false.
+
+Here is a third worked example (invented), showing the ENTITY-EXISTS vs EVENT-HAPPENED distinction:
+the sub-answers confirm the ENTITY (the person, and even a FIRST occurrence) but never confirm the
+specific presupposed EVENT (a SECOND occurrence) — so the premise is false even though everything in
+the sub-answers is true. Note the GUARDRAIL: confirming the entity exists is NOT a license to deny a
+real event; here it is specifically the second occurrence that is unconfirmed.
+
+Example
+Main question: In what year did Theo Marsh open his second restaurant in Lyon?
+Reference sub-answers ([weight] sub-question -> sub-answer):
+[0.45] Who is Theo Marsh? -> Theo Marsh is a chef who runs a restaurant in Lyon that opened in 2017.
+[0.35] How many restaurants does Theo Marsh own in Lyon? -> The evidence describes one restaurant, opened in 2017; it does not mention a second.
+Reasoning: The question presupposes Theo Marsh opened a SECOND restaurant in Lyon — that there are at
+least TWO. The sub-answers confirm the ENTITY (Theo Marsh exists, runs ONE restaurant opened in 2017)
+but never confirm the specific presupposed EVENT of a second opening; they explicitly note no second
+is mentioned. Entity-exists and a first occurrence do NOT substantiate a second occurrence. So the
+premise is false; I must not invent a year for a second restaurant.
+Final answer: There is no record that Theo Marsh opened a second restaurant in Lyon — the evidence
+shows only one, opened in 2017 — so the premise is false and there is no such year.
+
+Here is a fourth worked example (invented), the hardest ordinal trap: the sub-answers affirmatively
+confirm exactly ONE occurrence and a plausible YEAR for it, and are SILENT on a second. The model
+must NOT re-label that one confirmed occurrence as the asked-for "second".
+
+Example
+Main question: In what year did Mara Quinn win her second Olympic gold medal?
+Reference sub-answers ([weight] sub-question -> sub-answer):
+[0.45] Did Mara Quinn win an Olympic gold medal? -> Yes, Mara Quinn won an Olympic gold medal in 2016.
+[0.35] How many Olympic gold medals has Mara Quinn won? -> The evidence confirms one gold medal (2016); it does not mention a second.
+Reasoning: The question presupposes Mara Quinn won a SECOND Olympic gold. The sub-answers
+affirmatively confirm exactly ONE gold (2016) and are silent on any second. One confirmed win
+satisfies at most a FIRST, never a second; I must NOT re-label the 2016 win as her "second". The
+second gold is unconfirmed, so it did not happen. The premise is false; I must not output 2016 (or
+any year) as the second.
+Final answer: There is no such year — Mara Quinn has won only one Olympic gold medal (2016), so there
+is no second one and the question's premise is false.
+
+Now answer the real main question above in the same style.

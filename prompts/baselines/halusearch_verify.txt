@@ -1,0 +1,21 @@
+You are a careful reviewer estimating the hallucination risk of a reasoning continuation. Given the
+question, the reasoning so far, and a proposed continuation, please rate the likelihood of
+hallucinations appearing in the continuation.
+
+1 - No hallucination risk; the continuation is well-grounded and factually/logically reliable.
+2 - Low risk.
+3 - Moderate risk.
+4 - High risk.
+5 - Very high risk; the continuation is likely fabricated, unsupported, or logically broken.
+
+Do not judge a reply as hallucinated just because it is incomplete. Output a score from 1 to 5.
+
+Question: ${question}
+
+Reasoning so far:
+${prefix}
+
+Continuation to rate:
+${candidate}
+
+Hallucination risk score (1-5):

@@ -1,0 +1,75 @@
+You are a query-complexity analyst. Score the MAIN QUESTION on four dimensions of reasoning
+complexity. For each dimension assign an integer: 0 = none, 1 = some, 2 = strong.
+
+1. multi_step: Does reaching the answer require multiple sequential reasoning or calculation
+   steps? A multi-step arithmetic word problem scores 2; a single-fact lookup scores 0.
+2. cognitive_diversity: Does it mix different reasoning types (e.g. facts AND calculation, or
+   retrieval AND logic)? Combining two facts/entities and then comparing them scores 2.
+3. constraint_coupling: Are there interdependent entities, conditions, or constraints that must
+   be tracked together to answer correctly?
+4. external_dependency: Judge whether YOUR OWN internal knowledge is reliable enough to answer
+   this CORRECTLY, or whether the answer needs external / up-to-date verification. This is a
+   self-assessment of knowledge confidence, not a keyword check.
+   Score 2 (NOT confident — needs retrieval) when the answer hinges on a specific, long-tail,
+   niche, time-varying, or very recent fact that you are NOT reliably certain of — e.g. a
+   superlative or ranking over the real world ("most / largest / highest / record"), a precise
+   date, price, count, or attribution, the holder of a record or office, or anything whose value
+   can change over time or that only a specialized source would know with certainty. If you would
+   be guessing, or your memory might be outdated or imprecise, score 2.
+   Score 1 when some external grounding would help but the fact is fairly stable and you are
+   moderately confident.
+   Score 0 (CONFIDENT — answer from parametric knowledge) ONLY when this is stable, well-known,
+   textbook-level fact you are sure of (capital cities, famous paintings, classic films and
+   their directors, enduring geographic or scientific facts, general common sense), OR when the
+   question is a SELF-CONTAINED reasoning / math problem whose answer comes from computation over
+   the given text rather than from any external lookup.
+   Do NOT inflate this for self-contained math or logic word problems: their inputs come from the
+   problem statement, not the outside world, so they need COMPUTATION, not retrieval — score 0.
+
+Examples (note how multi-step word problems and multi-hop questions score high, and how
+external_dependency reflects your self-assessed knowledge confidence: a specific / long-tail /
+time-varying fact you are not reliably sure of scores 2, while a stable textbook fact OR a
+self-contained reasoning problem scores 0):
+
+Q: If a crate holds 7 jars and you load 4 crates, then sell 9 jars, how many jars remain?
+{"multi_step": 2, "cognitive_diversity": 1, "constraint_coupling": 2, "external_dependency": 0}
+
+Q: What is the capital city of a small European country?
+{"multi_step": 0, "cognitive_diversity": 0, "constraint_coupling": 0, "external_dependency": 0}
+
+Q: Which open-source code repository currently has the largest number of followers?
+{"multi_step": 1, "cognitive_diversity": 1, "constraint_coupling": 1, "external_dependency": 2}
+
+Q: Who first introduced a particular early machine-learning algorithm decades ago?
+{"multi_step": 0, "cognitive_diversity": 1, "constraint_coupling": 1, "external_dependency": 2}
+
+Q: A baker bakes 24 loaves in the morning and half as many in the afternoon; how many in total?
+{"multi_step": 2, "cognitive_diversity": 0, "constraint_coupling": 1, "external_dependency": 0}
+
+Q: Who is the current chief executive of the largest social-media company, as of this year?
+{"multi_step": 1, "cognitive_diversity": 2, "constraint_coupling": 2, "external_dependency": 2}
+
+Q: What is the most recent feature film released by the studio behind Toy Story?
+{"multi_step": 1, "cognitive_diversity": 2, "constraint_coupling": 2, "external_dependency": 2}
+
+Q: Was the founder of the Marlin shipping line born in the same country as the designer of the Verloon bridge?
+{"multi_step": 2, "cognitive_diversity": 2, "constraint_coupling": 1, "external_dependency": 2}
+
+Q: A cyclist rides 12 km in the first hour and 30 km over the next three hours; what is the average speed?
+{"multi_step": 2, "cognitive_diversity": 0, "constraint_coupling": 2, "external_dependency": 0}
+
+Q: Could a cactus thrive submerged at the bottom of a freshwater pond?
+{"multi_step": 2, "cognitive_diversity": 2, "constraint_coupling": 2, "external_dependency": 0}
+
+Q: Would someone who is severely allergic to flour enjoy a career as a baker?
+{"multi_step": 2, "cognitive_diversity": 2, "constraint_coupling": 1, "external_dependency": 0}
+
+Q: What color is the sky on a clear day?
+{"multi_step": 0, "cognitive_diversity": 0, "constraint_coupling": 0, "external_dependency": 0}
+
+Now score the MAIN QUESTION with the same standard, then output ONLY the JSON object in the
+same format as the examples above, using YOUR OWN integer scores — do not copy the example
+values, and do not output all zeros unless the question is genuinely a trivial single-step lookup.
+
+MAIN QUESTION:
+${question}

@@ -1,0 +1,38 @@
+You are given the main question, a draft final answer, and the high-confidence sub-answers.
+Silently check whether the draft final answer is consistent with the sub-answers. If it
+contradicts them, fix it using the sub-answers; otherwise keep it as is.
+
+Output ONLY the final answer to the main question — the answer text itself, nothing else.
+Do NOT state whether it is consistent or contradictory, do NOT mention the sub-answers,
+do NOT explain your check, do NOT write any preamble such as "The answer is" or "Final answer:".
+Your entire response is the answer text the reader should see.
+
+PRESERVE A FALSE-PREMISE CORRECTION: if the draft final answer says the question's presupposition
+is false — that the asked-about entity/event/relationship does not exist, never happened, or is not
+the case (e.g. "no human has landed on Mars", "Meta has not moved its headquarters to Austin", "X
+never won", "Ireland is not a part of England") — you MUST keep that correction and output it as a
+full, self-contained statement. Do NOT collapse it to a bare "No", do NOT strip the explanation, and
+NEVER rewrite it into an answer that AFFIRMS the false premise (e.g. do not turn "Meta has not moved
+to Austin" into a year, and do not turn "Ireland is not part of England" into an explanation of why
+it is). When the draft corrects a false premise, the sub-answers do not "contradict" it merely by
+discussing the topic — keep the correction.
+
+If, and ONLY if, the main question is a genuine yes/no, true/false, or
+"did/does/do/is/are/was/were/can/could/would/should/has/have/will..."-style question — one that
+asks whether something is the case — the output MUST BEGIN with an explicit "Yes" or "No" (or
+"True"/"False"), immediately followed by the rest of the answer (never a bare "Yes"/"No" alone when
+there is a correction or explanation to give). For any other kind of question — including "what
+year / when / why / who / which" questions — do NOT begin with "Yes"/"No"/"True"/"False"; give the
+answer text directly (for a false-premise "what year/when" question, state plainly that there is no
+such year / it did not happen). A numeric question (how many / how much / how long / what is the
+total / what fraction / a question whose answer is a quantity) must give the number and must NEVER
+begin with "Yes" or "No".
+
+If the draft final answer is empty or has no concrete content, do not output an empty response:
+fall back to the most concrete answer supported by the sub-answers (the number, name, or verdict).
+
+Main question: ${main_q}
+Draft final answer: ${answer}
+
+High-confidence sub-answers:
+${high_conf}

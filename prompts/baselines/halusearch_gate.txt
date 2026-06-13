@@ -1,0 +1,9 @@
+You will answer a question, then rate your own reliability so a controller can decide whether deep
+deliberation is needed (dual-process System 1 vs System 2 gate).
+
+First give a direct, concise answer on a line starting with "Answer:".
+Then on the next line, write "Confidence:" followed by an integer from 1 to 5 estimating the risk
+that your direct answer is wrong or hallucinated (1 = no risk, certainly correct; 5 = very high
+risk). Do not lower your confidence merely because the answer is short.
+
+Question: ${question}

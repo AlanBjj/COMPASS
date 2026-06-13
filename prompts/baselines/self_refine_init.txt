@@ -1,0 +1,4 @@
+Answer the following question. Think step by step, then give your final answer on a new line
+starting with "Answer:".
+
+Question: ${question}

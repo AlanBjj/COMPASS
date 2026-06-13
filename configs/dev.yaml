@@ -1,0 +1,75 @@
+# Dev / smoke config. Tiny sample, fast. Every hyperparameter the method uses lives in
+# configs (never hardcoded) so the later sensitivity study is trivial.
+# Values match paper/main.tex: alpha=0.4, tau=0.55, lambda=0.1, fusion 0.6/0.4, RAG 0.4/0.3/0.3.
+
+run:
+  name: dev
+  seed: 0
+  sample_size: 5            # smoke only; full benchmarks override this
+
+# All three roles point at the SAME vLLM endpoint/model (Qwen2-7B-Instruct), but are
+# billed separately (controller vs backbone vs judge). Serve with: bash scripts/serve.sh 7b
+models:
+  controller:               # gate / decomposition / sub-answer scoring
+    base_url: http://localhost:8000/v1
+    model: qwen2-7b-instruct
+    temperature: 0.0        # deterministic control signals
+    max_tokens: 1024
+  backbone:                 # answering / fusion
+    base_url: http://localhost:8000/v1
+    model: qwen2-7b-instruct
+    temperature: 0.0
+    max_tokens: 2048
+  judge:                    # automated HR/Acc evaluator = the configured judge (base_url+key from .env);
+    base_url: SET_OPENAI_BASE_URL_IN_ENV/v1   # dev smoke can skip the judge: run.sh --no-judge
+    model: gpt-5.4-mini
+    temperature: 0.0
+    max_tokens: 128
+
+client:
+  concurrency: 8
+  retries: 3
+
+gate:                       # Step 1 — Hybrid Decomposition Gate
+  alpha: 0.4                # weight on heuristic score H
+  tau: 0.55                 # complexity threshold (paper value; legacy wrongly used 0.80)
+
+decompose:                  # Step 2 — Sub-queries Decomposition
+  lambda: 0.1               # |S| regularizer (conceptual; bounds via min/max below)
+  min_subqueries: 2
+  max_subqueries: 4
+
+scoring:                    # Step 4 — Sub-answer Quality Scoring
+  acc_weight: 0.6
+  rel_weight: 0.4
+  low_quality_threshold: 2.0  # if all Q < this -> fall back to DirectGen(main query)
+
+rag:                        # Step 3 (Fact) — Multi-Source Weighted RAG
+  source_weights:              # freshness: official/news lead; academic minimal (and rendered first)
+    official: 0.45
+    news: 0.35
+    academic: 0.20
+  cache_dir: results/rag_cache   # snapshot every retrieval for reproducibility (R3)
+
+trace:                      # TRACE — Type-Routed Adaptive Consistency (post-answer, v1)
+  enabled: true             # master switch; false -> single sample everywhere (legacy behaviour)
+  k: 5                      # samples re-drawn per triggered answer
+  temperature: 0.7          # sampling temperature for the k re-samples
+  # min_votes:              # optional override; default = a true majority of (k + base) ballots
+  math: true                # MATH operator: canonicalize final number, majority vote
+  reasoning: true           # REASONING operator: yes/no verdict vote, else open-ended CPC
+  fact: false               # retrieval/fact paths stay single-sample in v1
+  # CPC (Cross-Perspective Consistency) — open-ended misconception operator (replaces stance vote).
+  # Two cross-perspective legs (de-biased paraphrase + grounded premise audit) converge to an
+  # explicit refutation when the premise is false; ~2 extra controller calls, counted in the ledger.
+  cpc_temperature: 0.0      # deterministic legs (de-bias + audit)
+  cpc_max_tokens: 256       # room for a decisive, explicit refutation (not a one-word verdict)
+
+dataset:
+  name: truthfulqa
+  path: data/truthfulqa/TruthfulQA.json   # NOTE: data not yet relocated from legacy/
+  split: all              # dev | test | all — tune on dev, run test once (--split overrides)
+  dev_size: 100           # size of the dev split (ignored for freshqa: it has an official split)
+
+output:
+  dir: results

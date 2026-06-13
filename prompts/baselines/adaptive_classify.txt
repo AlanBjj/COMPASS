@@ -1,0 +1,21 @@
+Classify the retrieval complexity of the QUESTION into exactly one class, matching how a
+question can be answered:
+
+A = You can answer it correctly from your own knowledge or pure reasoning/math; no search needed.
+B = It needs exactly one fact lookup (a single retrieval suffices).
+C = It needs several lookups combined across multiple reasoning steps (multi-hop).
+
+Output ONLY the single letter A, B, or C. Nothing else.
+
+Question: What is 17 multiplied by 4?
+Class: A
+
+Question: What year was the Eiffel Tower completed?
+Class: B
+
+Question: Which country has a larger population, the home country of the director of the film
+Inception or the home country of the director of the film Parasite?
+Class: C
+
+Question: ${question}
+Class:

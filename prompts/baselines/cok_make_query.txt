@@ -1,0 +1,17 @@
+Write a question that asks about the answer to the overall question.
+
+Overall Question: The Sentinelese language is the language of people of one of which Islands in the Bay of Bengal?
+Answer: The language of the people of North Sentinel Island is Sentinelese.
+Question: What peoples' language is Sentinelese?
+
+Overall Question: Two positions were filled in The Voice of Ireland by which British-Irish girl group based in London, England?
+Answer: Little Mix is based in London, England.
+Question: What girl group is based in London, England?
+
+Overall Question: Where were the Olympics held when the 1993 World Champion figure skater's home country won it's second Winter Games gold medal?
+Answer: the 1993 World Champion figure skater's home country is Canada.
+Question: What is the home country of the 1993 World Champion figure skater?
+
+Overall Question: ${question}
+Answer: ${answer}
+Question:

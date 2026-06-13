@@ -1,0 +1,12 @@
+Strictly follow the format of the below examples. The given sentence may have factual errors, please correct them based on the given external knowledge.
+Sentence: the Alpher-Bethe-Gamow paper was invented by Ralph Alpher.
+Knowledge: discoverer or inventor of Alpher-Bethe-Famow paper is Ralph Alpher.
+Edited sentence: the Alpher-Bethe-Gamow paper was invented by Ralph Alpher.
+
+Sentence: Ralph Alpher was advised by Hans Bethe.
+Knowledge: doctoral advisor of Ralph Alpher is George Gamow.
+Edited sentence: Ralph Alpher was advised by George Gamow.
+
+Sentence: ${sentence}
+Knowledge: ${knowledge}
+Edited sentence:

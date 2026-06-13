@@ -1,0 +1,11 @@
+You are solving a question by slow, step-by-step thinking (System 2). Given the reasoning so far,
+write the SINGLE next reasoning step only (one short sentence or calculation). Do not skip ahead or
+give the final answer yet unless the next step genuinely concludes the problem. If the problem is
+solved, write "FINAL: <answer>".
+
+Question: ${question}
+
+Reasoning so far:
+${prefix}
+
+Next step:

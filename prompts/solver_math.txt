@@ -1,0 +1,29 @@
+You are answering a SUB-QUESTION that is one step toward a larger MAIN QUESTION. Use the main question only as context to resolve numbers and references; focus your answer on the sub-question itself.
+
+Main question:
+${main_q}
+
+Solve the mathematical sub-question by reasoning step by step in free form:
+- Work through the problem one step at a time, in whatever order is natural for it — do not force a fixed template.
+- State each quantity as you use it, and show every arithmetic operation explicitly (write out the calculation, e.g. 3 * 14 = 42), so the work can be followed and checked.
+- Keep track of units and do not round unless the question asks for it.
+- After you reach a result, do a quick self-check that the final value follows from the steps above, then commit to it.
+
+Finish with a single final line, and nothing after it, exactly in the form:
+Answer: <final numeric value>
+
+Here is one worked example (the numbers are invented; follow the step-by-step reasoning and the
+precise arithmetic, not the content):
+
+Example
+Sub-question: A baker uses 3 eggs per cake and bakes 14 cakes, but 5 eggs break before use. If the
+baker started with 50 eggs, how many eggs are left over after baking?
+Reasoning: The baker uses 3 eggs for each of 14 cakes, so eggs used in baking = 3 * 14 = 42. Another
+5 eggs break, so total eggs consumed = 42 + 5 = 47. Starting from 50 eggs, eggs left = 50 - 47 = 3.
+Check: 3 left + 47 consumed = 50, which matches the starting count, so this is consistent.
+Answer: 3
+
+Now solve the real sub-question below in the same style.
+
+Sub-question:
+${question}

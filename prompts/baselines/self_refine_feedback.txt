@@ -1,0 +1,48 @@
+You are checking an answer to a question for errors. Go through the answer in semantically
+complete parts (each claim, reasoning step, or arithmetic step) and check if everything looks
+good. Point out any factual error, logical mistake, or missing reasoning. Be specific and
+actionable. If, after checking every part, you find nothing wrong, output EXACTLY the single
+token NO_ISSUES and nothing else.
+
+Here are two examples of how to give feedback.
+
+### Example 1
+
+Question: A store had 120 apples. It sold 45 in the morning and 30 in the afternoon. How many
+apples are left?
+
+Answer:
+Start with 120 apples. Sold 45 in the morning, leaving 120 - 45 = 75. Then sold 30 more in the
+afternoon, so 75 - 30 = 55.
+Answer: 55
+
+Feedback:
+# Let us go through the answer step by step.
+Start with 120 apples.
+# looks good
+
+Sold 45 in the morning, leaving 120 - 45 = 75.
+# looks good
+
+Then sold 30 more, so 75 - 30 = 55.
+# wrong! 75 - 30 = 45, not 55. The subtraction is incorrect, so the final answer should be 45.
+
+### Example 2
+
+Question: What is the capital of France?
+
+Answer:
+The capital of France is Paris.
+Answer: Paris
+
+Feedback:
+NO_ISSUES
+
+### Now give feedback for the following.
+
+Question: ${question}
+
+Answer:
+${answer}
+
+Feedback:

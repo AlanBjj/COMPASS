@@ -1,0 +1,11 @@
+Revise your answer to the question using the feedback. Address every issue raised in the
+feedback. Think step by step, then give your improved final answer on a new line starting with
+"Answer:".
+
+Question: ${question}
+
+Previous answer:
+${answer}
+
+Feedback:
+${feedback}

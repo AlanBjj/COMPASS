@@ -1,0 +1,17 @@
+Follow the below example, select relevant knowledge domains from Available Domains to the Q.
+Available Domains: factual, medical, physical, biology
+
+Q: This British racing driver came in third at the 2014 Bahrain GP2 Series round and was born in what year
+Relevant domains: factual
+
+Q: Which of the following drugs can be given in renal failure safely?
+Relevant domains: medical
+
+Q: Which object has the most thermal energy?
+Relevant domains: factual, physical
+
+Q: Is the following trait inherited or acquired? Barry has a scar on his left ankle.
+Relevant domains: biology
+
+Q: ${question}
+Relevant domains:

@@ -1,0 +1,7 @@
+Given the question and the verified reasoning chain (the highest-value path found by the search),
+state the final answer on a line starting with "Answer:". Be concise and do not introduce new claims.
+
+Question: ${question}
+
+Verified reasoning:
+${reasoning}

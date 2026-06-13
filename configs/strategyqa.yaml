@@ -1,0 +1,23 @@
+# StrategyQA benchmark run. All hyperparameters here (paper values). One YAML per run.
+run:
+  name: strategyqa
+  seed: 0
+  sample_size: null           # formal test: full test split (dev 100 held out)
+
+models:
+  controller: {base_url: http://localhost:8000/v1, model: qwen2-7b-instruct, temperature: 0.0, max_tokens: 1024}
+  backbone:   {base_url: http://localhost:8000/v1, model: qwen2-7b-instruct, temperature: 0.0, max_tokens: 1024}
+  judge:      {base_url: SET_OPENAI_BASE_URL_IN_ENV/v1, model: gpt-5.4-mini, temperature: 0.0, max_tokens: 512}  # set base_url + OPENAI_API_KEY env
+
+client: {concurrency: 8, retries: 3}
+gate: {alpha: 0.4, tau: 0.55}
+decompose: {lambda: 0.1, min_subqueries: 2, max_subqueries: 4}
+scoring: {acc_weight: 0.6, rel_weight: 0.4, low_quality_threshold: 2.0}
+rag:
+  source_weights: {official: 0.45, news: 0.35, academic: 0.20}  # freshness: official/news lead; academic minimal (and rendered first)
+  cache_dir: results/rag_cache
+
+trace: {enabled: true, k: 5, temperature: 0.7, math: true, reasoning: true, fact: false, cpc_temperature: 0.0, cpc_max_tokens: 256}  # TRACE math + yes/no vote; open-ended -> CPC cross-perspective convergence (de-bias + premise audit)
+
+dataset: {name: strategyqa, path: data/strategyqa/strategyqa.json, split: test, dev_size: 100}  # formal test: full test split (dev 100 held out; official test labels private)
+output: {dir: results}

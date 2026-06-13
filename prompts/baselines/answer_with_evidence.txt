@@ -1,0 +1,8 @@
+Answer the question using the retrieved evidence below. Rely on the evidence where relevant; if
+the evidence is insufficient, use your own knowledge but do not invent facts. Think briefly, then
+give your final answer on a line starting with "Answer:".
+
+Question: ${question}
+
+Retrieved evidence:
+${evidence}

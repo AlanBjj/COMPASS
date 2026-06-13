@@ -1,0 +1,2 @@
+Translate the following sentences into Chinese. Only response with translated sentence and do not include any useless content:
+${text}

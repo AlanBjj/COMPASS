@@ -1,0 +1,6 @@
+Given the question Q, and two potential answers: answer A in English and answer B in Chinese. Your task is to determine if the content and meaning of A and B are equivalent in the context of answering Q. Consider linguistic nuances, cultural variations, and the overall conveyance of information. Respond with a binary classification. If A and B are equivalent, output 'True.', otherwise output 'False'
+
+Question: ${q}
+Answer A (in English): ${a1}
+Answwer B (in Chinese): ${a2}
+Your response (True or False):

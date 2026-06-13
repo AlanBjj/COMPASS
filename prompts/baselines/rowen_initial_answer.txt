@@ -1,0 +1,3 @@
+When responding to my question, please first evaluate the validity of the information or the assumption underlying the question. Once you've established its truth or existence, then proceed to deliver a detailed explanation or answer. Prioritize accuracy and fact-checking before diving into elaboration or conjecture
+My Question: ${question}
+Your answer:
