@@ -5,6 +5,8 @@
 Writes one .tex fragment per table (table rows only; the table environment lives in the paper), e.g.
   main_all_test.tex       HR mean±std / Acc per dataset + average, 7 methods, three backbones
   signif_all_test.tex     paired bootstrap differences against every baseline
+  main_grouped_/signif_grouped_test.tex  the same with the benchmarks grouped (knowledge-intensive,
+                          reasoning-intensive) and a per-group average
   ablation_qwen3-8b_test.tex  HR (delta vs. full) of the ablations; datasets an ablation was not run on
                           reuse the full model's runs and are marked (component inactive there)
   plans_/retrieval_/consistency_/oracle_/costds_<bb>_test.tex  the analyses of the paper
@@ -628,6 +630,120 @@ def signif_all(results):
     return "\n".join(lines) + "\n"
 
 
+# Benchmark groups of the grouped main and significance tables, in column order:
+# knowledge-intensive (TruthfulQA, FreshQA) and reasoning-intensive (GSM8K, StrategyQA).
+GROUP_COLS = [("knowledge", ["truthfulqa", "freshqa"]), ("reasoning", ["gsm8k", "strategyqa"])]
+
+
+def grouped_cols():
+    """Column keys of the grouped tables: each group's datasets, then the group average; the macro average last."""
+    cols = []
+    for g, dss in GROUP_COLS:
+        cols += dss + [g]
+    return cols + ["avg"]
+
+
+def main_table_grouped(results):
+    """main_table_all with the benchmarks grouped: per-dataset HR, each group's average, and the macro
+    average over all four, each computed per run and then mean±std over runs; best bold / second
+    underlined per column within the backbone; MCS is the four-benchmark mean (no token column)."""
+    lines = []
+    for bb in BACKBONES:
+        root = os.path.join(results, bb)
+        data = {key: {ds: cell_runs(root, ds, key, b, "test") for ds in DATASETS} for _, key, b in METHODS}
+        cols = {ds: {k: data[k][ds] for k in data} for ds in DATASETS}
+        for g, dss in GROUP_COLS + [("avg", DATASETS)]:
+            cols[g] = {}
+            for key, cells in data.items():
+                if all(cells[ds] for ds in dss):
+                    n = min(len(cells[ds]) for ds in dss)
+                    cols[g][key] = [{"hr": st.mean(cells[ds][i]["hr"] for ds in dss)} for i in range(n)]
+                else:
+                    cols[g][key] = None
+        means = {c: {k: st.mean(r["hr"] for r in runs) for k, runs in col.items() if runs} for c, col in cols.items()}
+        marks = {c: ranks_of(means[c]) if all(col.values()) else {} for c, col in cols.items()}
+        lines.append(f"\\grp{{9}}{{{BB_NAMES[bb]}}} \\\\")
+        for label, key, _ in METHODS:
+            row = [("\\ours " if key == FINAL else "\\base ") + label]
+            for c in grouped_cols():
+                runs = cols[c][key]
+                ref = means[c].get("direct")
+                if runs and ref is not None:
+                    m, sd = mstd([r["hr"] for r in runs])
+                    row.append(tint(m, ref, marks[c].get(key)) + f"\\sd{{{sd:.1f}}}")
+                else:
+                    row.append("\\tbd")
+            cells = data[key]
+            if all(cells[ds] for ds in DATASETS):
+                n = min(len(cells[ds]) for ds in DATASETS)
+                acc = [st.mean(cells[ds][i]["acc"] for ds in DATASETS) for i in range(n)
+                       if all(cells[ds][i]["acc"] is not None for ds in DATASETS)]
+                row.append(f"{st.mean(acc):.1f}" if acc else "\\tbd")
+            else:
+                row.append("\\tbd")
+            lines.append(" & ".join(row) + " \\\\")
+    return "\n".join(lines) + "\n"
+
+
+def ci_cell(point, boots, n_boot):
+    """Difference with its 95% bootstrap interval; bold if the interval excludes zero (as in signif_table)."""
+    boots = sorted(boots)
+    lo, hi = boots[int(0.025 * n_boot)], boots[int(0.975 * n_boot) - 1]
+    fmt = "[\\mnumbf]" if (hi < 0 or lo > 0) else "[\\mnum]"
+    return "\\hcl" + fmt + f"{{{point:.1f}}}{{0}}" + f"\\ci{{{sgn(lo)}}}{{{sgn(hi)}}}"
+
+
+def signif_grouped_table(root, n_boot=10000, seed=0, split="test"):
+    """signif_table with the grouped columns. The dataset and macro-average columns repeat signif_table's
+    draws exactly (same generator, same order), so their values are identical; each group average
+    resamples within its two datasets with a second generator (seed + 1)."""
+    import random
+    rng, rng_g = random.Random(seed), random.Random(seed + 1)
+    ours = {ds: per_question(root, ds, FINAL, False, split) for ds in DATASETS}
+    lines = []
+    for label, key, b in METHODS:
+        if key == FINAL:
+            continue
+        base = {ds: per_question(root, ds, key, b, split) for ds in DATASETS}
+        diffs = {}
+        for ds in DATASETS:
+            if ours[ds] and base[ds]:
+                ids = sorted(set(ours[ds]) & set(base[ds]))
+                diffs[ds] = [ours[ds][i][0] - base[ds][i][0] for i in ids]
+        cells = {}
+        for c in DATASETS + ["avg"]:                       # signif_table's order and draws
+            if c == "avg":
+                if len(diffs) < len(DATASETS):
+                    continue
+                point = st.mean(st.mean(d) for d in diffs.values())
+                boots = [st.mean(st.mean(rng.choices(d, k=len(d))) for d in diffs.values()) for _ in range(n_boot)]
+            elif c in diffs:
+                d = diffs[c]
+                point = st.mean(d)
+                boots = [st.mean(rng.choices(d, k=len(d))) for _ in range(n_boot)]
+            else:
+                continue
+            cells[c] = ci_cell(point, boots, n_boot)
+        for g, dss in GROUP_COLS:
+            if all(ds in diffs for ds in dss):
+                point = st.mean(st.mean(diffs[ds]) for ds in dss)
+                boots = [st.mean(st.mean(rng_g.choices(diffs[ds], k=len(diffs[ds]))) for ds in dss)
+                         for _ in range(n_boot)]
+                cells[g] = ci_cell(point, boots, n_boot)
+        row = ["\\base " + label] + [cells.get(c, "\\tbd") for c in grouped_cols()]
+        lines.append(" & ".join(row) + " \\\\")
+    return "\n".join(lines) + "\n"
+
+
+def signif_grouped(results):
+    """Grouped paired-bootstrap table for the three backbones, one group row per backbone."""
+    lines = []
+    for bb in BACKBONES:
+        lines.append(f"\\grp{{8}}{{{BB_NAMES[bb]}}} \\\\")
+        lines.append(signif_grouped_table(os.path.join(results, bb)).rstrip("\n"))
+    return "\n".join(lines) + "\n"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default="results")
@@ -653,6 +769,8 @@ def main():
         write(f"consistency_{bb}_test.tex", consistency_table(root))
     write("main_all_test.tex", main_table_all(args.results))
     write("signif_all_test.tex", signif_all(args.results))
+    write("main_grouped_test.tex", main_table_grouped(args.results))
+    write("signif_grouped_test.tex", signif_grouped(args.results))
     write("sens_qwen3-8b_dev.tex", sens_table(os.path.join(args.results, "qwen3-8b")))
     export_figure_data(args.results, os.path.join(args.out, "data"))
     print("figure data written to", os.path.join(args.out, "data"))
