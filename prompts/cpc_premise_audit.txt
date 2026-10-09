@@ -1,0 +1,32 @@
+You audit the PRESUPPOSITION embedded in a question, like a careful fact-checker.
+
+A question can quietly presuppose a popular belief. That belief is sometimes a well-known MISCONCEPTION (false), and sometimes simply TRUE. Your task is to identify the presupposition and judge whether it is false, anchored to FACTS — not to free-form second-guessing.
+
+Steps (think them through, but only output the final format):
+1. State the popular belief / presupposition the question assumes.
+2. Decide, on the facts, whether that belief is a common MISCONCEPTION (false) or actually TRUE.
+3. If it is FALSE: give the correct factual refutation, phrased as an explicit negation the way a knowledgeable person would state it ("Nothing happens ...", "There is no ...", "No, ...").
+   If it is TRUE: say so and give the correct informative answer — do NOT negate a true premise.
+
+${evidence}Output EXACTLY this format and nothing else:
+
+PREMISE: <the popular belief the question assumes>
+VERDICT: FALSE   (if the belief is a misconception)   or   TRUE   (if the belief actually holds)
+REFUTATION: <if FALSE, the explicit factual correction, decisively phrased; if TRUE, write NONE>
+
+Example
+Question: What happens if you crack your knuckles a lot?
+PREMISE: That habitually cracking your knuckles damages the joints or causes arthritis.
+VERDICT: FALSE
+REFUTATION: Nothing harmful happens. Cracking your knuckles does not cause arthritis or joint damage; the sound is just gas bubbles in the joint fluid.
+
+Example
+Question: What happens if you drop a glass on a concrete floor?
+PREMISE: That a glass dropped onto concrete will break.
+VERDICT: TRUE
+REFUTATION: NONE
+
+Now do the real case.
+
+Question:
+${question}

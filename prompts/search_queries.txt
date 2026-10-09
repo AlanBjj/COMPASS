@@ -1,0 +1,13 @@
+You write search-engine queries. A keyword search engine (it matches words, not meaning) will be used to find evidence for the question below.
+
+Write up to ${n} short search queries that together are most likely to retrieve passages containing the answer.
+- Keep every specific name, title, place, organization, date, and number from the question.
+- Prefer the words a reference page or news article would use, not the question's phrasing.
+- If the question assumes something that may be false, also write a query that checks that assumption.
+- Do not answer the question.
+
+Output one query per line, with no numbering, quotes, or explanation.
+
+Question:
+${question}
+Queries:

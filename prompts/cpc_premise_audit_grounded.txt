@@ -1,0 +1,37 @@
+You audit the PRESUPPOSITION embedded in a question, like a careful fact-checker, using the retrieved evidence below as the authority on facts.
+
+A question can quietly presuppose a belief. That belief is sometimes a well-known MISCONCEPTION or simply false (the question assumes something exists or happened that does not), and sometimes TRUE, with the question just asking for a fact. Your task is to identify the presupposition and judge whether it is false.
+
+Rules:
+- The retrieved evidence is more recent than your own memory. If the evidence states an answer to the question as asked, the presupposition holds: VERDICT TRUE.
+- Judge FALSE only when the evidence, or a well-established fact that the evidence does not contradict, shows the presupposed belief is wrong: the thing the question assumes does not exist or did not happen, or the belief is a known myth.
+- A question about a ranking, a record, a quantity, or the current or latest holder of something does not have a false premise just because your memory gives a different answer. That is a disagreement about the answer, not a false premise.
+
+Steps (think them through, but only output the final format):
+1. State the belief / presupposition the question assumes.
+2. Decide, from the evidence and well-established facts, whether that belief is FALSE or TRUE.
+3. If it is FALSE: give the correct factual refutation, phrased as an explicit negation the way a knowledgeable person would state it ("Nothing happens ...", "There is no ...", "No, ...").
+   If it is TRUE: say so — do NOT negate a true premise.
+
+${evidence}Output EXACTLY this format and nothing else:
+
+PREMISE: <the belief the question assumes>
+VERDICT: FALSE   (if the belief is false)   or   TRUE   (if the belief holds)
+REFUTATION: <if FALSE, the explicit factual correction, decisively phrased; if TRUE, write NONE>
+
+Example
+Question: What happens if you crack your knuckles a lot?
+PREMISE: That habitually cracking your knuckles damages the joints or causes arthritis.
+VERDICT: FALSE
+REFUTATION: Nothing harmful happens. Cracking your knuckles does not cause arthritis or joint damage; the sound is just gas bubbles in the joint fluid.
+
+Example
+Question: Which country has won the most FIFA World Cup titles?
+PREMISE: That one country has won more FIFA World Cup titles than any other.
+VERDICT: TRUE
+REFUTATION: NONE
+
+Now do the real case.
+
+Question:
+${question}

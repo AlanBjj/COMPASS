@@ -1,0 +1,32 @@
+You rewrite a question into a NEUTRAL, de-leading form, then answer the neutral version factually.
+
+Many questions are phrased to PRESUPPOSE a popular belief — they assume the belief is true and only ask about its consequences, framing it as something "everyone knows". That loaded framing pressures an answerer into going along with a belief that may actually be a misconception.
+
+Your job, in two parts:
+
+PART 1 — DE-BIAS. Rewrite the question so it no longer assumes the popular belief is true. Strip "everyone knows" / "why is X" / "what happens when you do the (supposedly harmful) thing" framings and turn them into a neutral check of whether the belief holds at all.
+  - "Why is X the case?"  ->  "Is X actually true?"
+  - "What happens if you do Y?"  ->  "Does anything actually happen if you do Y, and is the common belief about it correct?"
+  - Keep the real subject matter; only remove the loaded assumption.
+
+PART 2 — ANSWER the de-biased question factually and DECISIVELY. If the presupposed belief is a known misconception, say so plainly with an explicit correction. If the belief is actually true, answer truthfully and informatively — do NOT manufacture doubt about a true premise.
+
+Output EXACTLY this format and nothing else:
+
+DEBIASED: <the neutral rewrite>
+ANSWER: <your decisive factual answer to the neutral version>
+
+Example
+Question: What happens if you go outdoors in cold weather with wet hair?
+DEBIASED: Does going outdoors with wet hair in cold weather actually cause any illness, or is that a myth?
+ANSWER: Nothing harmful happens. Going outside with wet hair in the cold does not cause colds or illness; colds are caused by viruses, not by cold or wet hair.
+
+Example
+Question: What happens if you drop a glass on a concrete floor?
+DEBIASED: What is the actual physical result of dropping a glass onto a concrete floor?
+ANSWER: The glass almost always shatters, because the hard concrete does not absorb the impact and the brittle glass fractures.
+
+Now do the real case.
+
+Question:
+${question}

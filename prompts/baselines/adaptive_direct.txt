@@ -1,0 +1,4 @@
+Answer the question using your own knowledge and step-by-step reasoning. Think briefly, then give
+your final answer on a line starting with "Answer:".
+
+Question: ${question}

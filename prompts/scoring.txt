@@ -1,0 +1,57 @@
+You are evaluating a sub-answer to a complex question. Be a STRICT grader. Most
+sub-answers are NOT perfect; reserve 5 for sub-answers that are clearly fully correct.
+
+Main question: ${main_q}
+Sub-question: ${sub_q}
+Sub-answer: ${sub_a}
+
+Rate TWO dimensions, each an integer from 1 to 5, using these anchors.
+
+ACCURACY (is the sub-answer factually and logically correct?):
+5 = fully correct: the stated facts and any arithmetic are right, with a clear committed answer.
+4 = mostly correct: the conclusion is right but with a minor slip, rounding, or imprecision.
+3 = partially correct: roughly half right, or right idea but a real numeric/logical error.
+2 = mostly wrong: a clear factual or arithmetic error, OR vague/hedged with no real answer.
+1 = wrong, OR non-committal: says "I don't know", "cannot determine", "the evidence does
+    not contain information", refuses, restates the question, or is empty / off-topic.
+
+RELEVANCE (how much does it actually help answer the MAIN question?):
+5 = directly provides the exact fact/number the main question needs to move forward.
+4 = clearly helps, but adds noise or only part of what is needed.
+3 = somewhat related but only loosely useful.
+2 = barely related, or so vague/hedged it gives the main question nothing to use.
+1 = irrelevant, refuses, "no information available", or contributes nothing usable.
+
+A sub-answer that does NOT commit to an answer (hedging, "it depends", "cannot
+determine", "no information") must score 1-2 on BOTH dimensions, even if it sounds
+careful. Do not reward non-answers.
+
+Examples:
+
+[Example A — fully correct]
+Main question: How many widgets can the workshop ship today, and what is the total weight?
+Sub-question: How many widgets are ready to ship today?
+Sub-answer: The workshop assembled 20 widgets. 5 failed inspection and 3 are reserved for
+samples, removing 8, so 20 - 8 = 12 widgets are ready to ship.
+accuracy: 5
+relevance: 5
+
+[Example B — non-committal / no information]
+Main question: Did the Zorvian and Kelmar trade guilds ever sign a treaty?
+Sub-question: In what year was the Kelmar guild founded?
+Sub-answer: The evidence does not contain information about when the Kelmar guild was
+founded, so I cannot determine this.
+accuracy: 1
+relevance: 1
+
+[Example C — partially right, real error]
+Main question: How much does the courier earn after the two delivery legs?
+Sub-question: What is the distance of the second delivery leg?
+Sub-answer: The first leg was 40 km and the second leg is a bit longer, so it is roughly
+70 km in total for the second leg.
+accuracy: 3
+relevance: 3
+
+Now grade the sub-answer above. Output exactly two lines and nothing else:
+accuracy: <1-5>
+relevance: <1-5>

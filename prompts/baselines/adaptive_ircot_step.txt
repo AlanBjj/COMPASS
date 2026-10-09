@@ -1,0 +1,15 @@
+You are answering a multi-step question by interleaving chain-of-thought reasoning and retrieval
+(IRCoT). You are given the evidence retrieved so far and the reasoning written so far. Write the
+NEXT SINGLE reasoning sentence that continues the chain of thought. Use the evidence where
+relevant. Do not repeat earlier sentences.
+
+When you have gathered enough information, write a final reasoning sentence that ends with
+"So the answer is: <answer>." (exactly that phrasing, terminated by a period).
+
+Output ONLY the next single sentence.
+
+Evidence retrieved so far:
+${evidence}
+
+Q: ${question}
+A: ${reasoning}

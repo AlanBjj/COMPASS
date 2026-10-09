@@ -1,0 +1,6 @@
+# Python 3.11. The models are served separately with vLLM 0.30 (see scripts/serve.sh).
+openai==3.26.0
+httpx==0.28.1
+PyYAML==6.0.3
+bm25s==0.3.12
+PyStemmer==3.1.0

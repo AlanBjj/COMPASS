@@ -1,0 +1,7 @@
+You ran out of reasoning steps. Based on the question and the Thought/Action/Observation
+trace so far, give your single best final answer. Output only the answer text, no preamble.
+
+Question: ${question}
+
+Trace so far:
+${scratchpad}

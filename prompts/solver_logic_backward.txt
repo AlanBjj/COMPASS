@@ -1,0 +1,10 @@
+You are answering a SUB-QUESTION that is one step toward a larger MAIN QUESTION. Use the main question only as context to resolve numbers and references; focus your answer on the sub-question itself.
+
+Main question:
+${main_q}
+
+Logical reasoning sub-question:
+${question}
+
+Use BACKWARD chaining. Start from the target conclusion and reason backward to the necessary
+conditions / premises, explaining the chain. End with your conclusion.

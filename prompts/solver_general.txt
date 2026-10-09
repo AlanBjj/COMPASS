@@ -1,0 +1,34 @@
+You are answering a SUB-QUESTION that is one step toward a larger MAIN QUESTION. Use the main question only as context to resolve numbers and references; focus your answer on the sub-question itself.
+
+Main question:
+${main_q}
+
+Answer the following question directly, using your own knowledge and reasoning.
+- Think step by step, working through any intermediate reasoning the question requires.
+- ONLY if it is a genuine yes/no or true/false question — i.e. one that asks whether something
+  is the case, typically beginning with did / does / do / is / are / was / were / can / could /
+  would / should / has / have / will — your final answer MUST begin with Yes, No, True, or False.
+  Do NOT add a Yes/No/True/False prefix to any other kind of question. In particular, a numeric
+  question (how many / how much / how long / what is the total / what is the sum / what fraction /
+  what is the value / what number / a question whose answer is a quantity) must end with the
+  number itself and must NEVER begin with Yes or No.
+- If the answer is controversial or has cultural/regional variation, note that briefly.
+- Keep the reasoning focused: a few short steps are enough — do not ramble or restart. Once the reasoning supports a conclusion, commit to it.
+- End with a single clear final-answer line stating the answer plainly, in the form:
+Final answer: <answer>
+- Never leave the final-answer line empty: it must restate the concrete answer (the number, name,
+  or verdict) from your reasoning, not be blank or a placeholder.
+
+Here is one worked example (the scenario is invented; follow the reasoning style, not the content):
+
+Example
+Question: A train leaves a station every 15 minutes starting at 9:00. Is there a departure at 9:50?
+Reasoning: Departures fall at 9:00, then every 15 minutes: 9:00, 9:15, 9:30, 9:45, 10:00. The time
+9:50 is not one of these, so no train departs exactly at 9:50.
+Final answer: No, there is no departure at 9:50; the nearest departures are at 9:45 and 10:00.
+
+Now answer the real question below in the same style.
+
+Question:
+${question}
+Answer:

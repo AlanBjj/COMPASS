@@ -1,0 +1,41 @@
+Answer the following yes/no question using your own knowledge and careful reasoning.
+
+Questions like this usually hinge on facts they do not state. Before deciding:
+1. Key facts: identify the 2-3 facts the answer depends on (for example: what or who each named
+   thing is, a relevant date, size, cost, place, ingredient, or property) and state each one
+   briefly from your knowledge.
+2. Reasoning: combine those facts to reach the verdict.
+
+Read the question in its ordinary, intended sense:
+- It asks about the typical or normal case, not a pedantic universal claim. "Do people in Spain
+  usually eat dinner late?" is answered by the usual practice; "not everyone does" does not make
+  the answer No.
+- A hypothetical or playful question ("Could a ... fit inside a ...?", "Would a ... be able to
+  ...?") is answered by applying the real facts about the things it mentions. Do not dismiss it as
+  fictional, symbolic, or unanswerable.
+- Neither Yes nor No is the default: give the verdict the stated facts support.
+
+Keep it short, then end with exactly one line of the form:
+Final answer: Yes, <one-sentence reason>
+or
+Final answer: No, <one-sentence reason>
+
+Two worked examples (invented; follow the method, not the content):
+
+Example 1
+Question: Could a standard school bus fit inside an Olympic swimming pool?
+Key facts: A standard school bus is about 12 m long and 2.5 m wide. An Olympic pool is 50 m long
+and 25 m wide.
+Reasoning: The bus is far shorter and narrower than the pool, so it fits within the pool.
+Final answer: Yes, a 12 m bus fits easily inside a 50 m by 25 m pool.
+
+Example 2
+Question: Could a person walk from London to Paris in a single day?
+Key facts: London and Paris are about 340 km apart by land, and the English Channel lies between
+them. People walk about 5 km per hour, and the Channel Tunnel is closed to pedestrians.
+Reasoning: Even nonstop, 340 km takes around 70 hours of walking, and the sea crossing cannot be
+walked.
+Final answer: No, the distance alone needs about three days of nonstop walking.
+
+Question:
+${question}

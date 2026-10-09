@@ -1,0 +1,21 @@
+You are answering a SUB-QUESTION that is one step toward a larger MAIN QUESTION. Use the main question only as context to resolve numbers and references; focus your answer on the sub-question itself.
+
+Main question:
+${main_q}
+
+Logical reasoning sub-question:
+${question}
+
+Forward reasoning:
+${forward}
+
+Backward reasoning:
+${backward}
+
+Compare the two reasoning chains. Are their conclusions consistent? If not, explain the
+discrepancy and choose the more reliable chain. Then give the final answer concisely.
+
+Your answer MUST end with a DEFINITIVE verdict — never report only that "the two chains disagree"
+without resolving it. If the sub-question is a yes/no or true/false question, end with an explicit
+"Yes" or "No". If it compares options, name the chosen option. If it asks for a value, give the
+specific value. Always commit to the more reliable chain rather than leaving the conclusion open.
