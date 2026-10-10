@@ -85,6 +85,7 @@ Every run checkpoints every 100 questions and resumes from its `.partial.json` w
 python scripts/paper_tables.py --results results --out paper_tables/    # every table and figure data file of the paper
 python scripts/gate_weight_check.py --results results --out paper_tables/  # gate decisions under other rule weights (Table S3)
 python scripts/summarize.py --dir results/qwen3-8b --split test         # one-screen overview
+python scripts/result_analyses.py --results results --data data           # analyses cited in the results and parameter checks
 python scripts/second_judge.py --results results --analyze-only          # second judge vs. main judge
 ```
 
