@@ -12,8 +12,8 @@ Writes one .tex fragment per table (table rows only; the table environment lives
   plans_/retrieval_/consistency_/oracle_/costds_<bb>_test.tex  the analyses of the paper
 and the data files of the figures (data/*.dat). Every tinted column is colored on its own scale (tab_tint.py): within each
 backbone, the median is white, better values are blue and worse values orange, shaded by rank, and the best and second-best
-values are set in bold and underlined. In the paired-difference tables, a gray value has an interval that includes zero; the
-oracle table is not tinted (retrospective bounds, in gray).
+values are set in bold and underlined. In the paired-difference tables, each difference is printed with its 95% interval;
+the oracle table is not tinted (retrospective bounds, in gray).
 A cell whose runs are not all judged yet prints \\tbd (a macro the paper defines), so a partial run
 never shows up as a number. HR and Acc are recomputed from the per-record judgments; population std
 over runs; the average is taken per run over the four datasets, then mean±std over runs.
@@ -699,11 +699,8 @@ def main_table_grouped(results):
 
 
 def signed_cell(point, lo, hi):
-    """A signed difference (lower favors COMPASS) with its 95% interval; gray when the interval includes zero."""
-    cell = f"\\hcls{{{point:.1f}}}{{0}}"
-    if not (hi < 0 or lo > 0):
-        cell = f"\\nsig{{{cell}}}"
-    return cell + f"\\ci{{{sgn(lo)}}}{{{sgn(hi)}}}"
+    """A signed difference (lower favors COMPASS) with its 95% interval; the interval shows significance."""
+    return f"\\hcls{{{point:.1f}}}{{0}}" + f"\\ci{{{sgn(lo)}}}{{{sgn(hi)}}}"
 
 
 def ci_cell(point, boots, n_boot):

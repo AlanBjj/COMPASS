@@ -90,7 +90,7 @@ python scripts/second_judge.py --results results --analyze-only          # secon
 ```
 
 The tables are tinted per column by `scripts/tab_tint.py`: within each backbone, the median is white, better values are
-blue and worse values orange, shaded by rank, with the best value in bold and the second best underlined. In the paired-difference table, gray values have an interval that includes zero.
+blue and worse values orange, shaded by rank, with the best value in bold and the second best underlined. In the paired-difference table, a difference is significant when its 95% interval excludes zero.
 
 ## 5. Result files
 
