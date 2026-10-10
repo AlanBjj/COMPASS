@@ -1,15 +1,14 @@
 """Per-column heat-map tints for the paper tables.
 
-Every tinted column is colored on its own scale. A column is tinted when its cells use \\hc (higher is better) or \\hcl
-(lower is better). Within the column, the median is white, and the other values are shaded by rank, one step per distinct
+Every tinted column is colored on its own scale. A column is tinted when its cells use \\hc (higher is better), \\hcl
+(lower is better), or \\hcls (a signed difference, lower is better). Within the column, the median is white, and the other values are shaded by rank, one step per distinct
 value away from the median: blue on the better side and orange on the worse side, with the fourth step and beyond at the
 darkest shade. The numbers carry the magnitude and the shade carries the order. When the rows are grouped by backbone
 (\\grp{..}{Qwen3-8B} ...), every column is scaled within each backbone, because absolute levels differ between backbones.
 scope="row" scales each row instead (tables whose columns are methods).
 
-Options used by paper_tables.py: center="zero" makes zero the white point (paired-difference tables, where blue favors
-COMPASS), and set_marks=False keeps the generator's bold (significance in those tables). Otherwise the best value of each
-block is set in bold and the second best underlined, ties sharing a mark. Cells printed with \\reused (values copied from
+The best value of each block is set in bold and the second best underlined, ties sharing a mark (set_marks=False keeps
+the generator's marks). Cells printed with \\reused (values copied from
 the full model in the ablation table) are not tinted.
 
 The output is a prefix \\heat{t} in front of each colored cell, t in [-1, 1] (+1 darkest blue, -1 darkest orange); the
@@ -22,12 +21,12 @@ from pathlib import Path
 
 SCOPE = "block"
 LEVELS = (0.0, 0.32, 0.55, 0.78, 1.0)   # shade of step 0 (the median) .. step 4 and beyond, as a fraction of the darkest tint
-TINT = re.compile(r"\\(hcl|hca|hc)(?=[\[{])(\[[^\]]*\])?\{\s*([-+0-9.]+)\s*\}\{\s*([-+0-9.]+)\s*\}")
+TINT = re.compile(r"\\(hcls|hcl|hca|hc)(?=[\[{])(\[[^\]]*\])?\{\s*([-+0-9.]+)\s*\}\{\s*([-+0-9.]+)\s*\}")
 OLD = re.compile(r"\\tscale\{[^{}]*\}\{[^{}]*\}|\\heat\{[^{}]*\}")
 NUM = re.compile(r"(?<![\w.])[-+]?\d+(?:\.\d+)?")
 SKIP = ("\\same", "\\na", "\\multicolumn", "\\cost", "\\tbd", "\\reused")
 MODEL = re.compile(r"\\grp\{\d+\}\{[^}]*(Llama|LLaMA|Ministral|Mistral|Qwen|Gemma)", re.I)
-SIGN = {"hc": 1.0, "hca": 1.0, "hcl": -1.0}
+SIGN = {"hc": 1.0, "hca": 1.0, "hcl": -1.0, "hcls": -1.0}   # hcls: a signed difference, lower is better
 
 
 def _split_cells(line):
@@ -77,7 +76,7 @@ def _set_fmt(cell, fmt):
     return c[:n.start()] + f"{fmt}{{{n.group(0)}}}" + c[n.end():]
 
 
-def tint_columns(text, scope=None, center="median", set_marks=True):
+def tint_columns(text, scope=None, set_marks=True):
     scope = scope or SCOPE
     lines = text.split("\n")
     tab, block, rows, in_tab, in_body = 0, 0, [], False, False
@@ -115,7 +114,7 @@ def tint_columns(text, scope=None, center="median", set_marks=True):
     stats, marks = {}, {}
     for k, vs in vals.items():
         gs = [round(v * sgn, 6) for v, sgn in vs]                              # "goodness": higher is better after the sign
-        med = 0.0 if center == "zero" else statistics.median(gs)
+        med = statistics.median(gs)
         stats[k] = (med, sorted({g for g in gs if g > med}), sorted({g for g in gs if g < med}, reverse=True))
         good = sorted(set(gs), reverse=True)
         marks[k] = (good[0], good[1] if len(good) > 1 else None) if len(good) > 1 else (None, None)
@@ -166,10 +165,10 @@ def tint_columns(text, scope=None, center="median", set_marks=True):
 
 
 
-def tint_fragment(text, scope=None, center="median", set_marks=True):
+def tint_fragment(text, scope=None, set_marks=True):
     """tint_columns for a fragment of table rows (no tabular environment around it)."""
     head, tail = "\\begin{tabular}{l}\n\\midrule\n", "\n\\end{tabular}"
-    out = tint_columns(head + text.rstrip("\n") + tail, scope, center, set_marks)
+    out = tint_columns(head + text.rstrip("\n") + tail, scope, set_marks)
     return out[len(head):-len(tail)] + "\n"
 
 

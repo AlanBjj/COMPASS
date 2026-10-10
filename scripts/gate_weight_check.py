@@ -89,13 +89,13 @@ def main():
         data = {ds: load(os.path.join(args.results, bb), ds) for ds in DATASETS}
         rows = [(f"Equal weights ({st.mean(W0):.2f} each)", {ds: changed(it, mean_w) for ds, it in data.items()})]
         rand = {ds: sorted(changed(it, w) for w in draws) for ds, it in data.items()}
-        rows.append((f"Random weights in $[{LO:.2f},{HI:.2f}]$, median", {ds: st.median(v) for ds, v in rand.items()}))
-        rows.append((f"Random weights in $[{LO:.2f},{HI:.2f}]$, maximum", {ds: v[-1] for ds, v in rand.items()}))
+        rows.append((f"Random weights in [{LO:.2f}, {HI:.2f}], median", {ds: st.median(v) for ds, v in rand.items()}))
+        rows.append((f"Random weights in [{LO:.2f}, {HI:.2f}], maximum", {ds: v[-1] for ds, v in rand.items()}))
         rows.append(("\\midrule", None))
         for tau in (0.50, 0.60):
-            rows.append((f"$\\tau={tau:.2f}$ (default weights)", {ds: changed(it, tau=tau) for ds, it in data.items()}))
+            rows.append((f"$\\tau$ = {tau:.2f} (default weights)", {ds: changed(it, tau=tau) for ds, it in data.items()}))
         for alpha in (0.3, 0.5):
-            rows.append((f"$\\alpha={alpha:.1f}$ (default weights)", {ds: changed(it, alpha=alpha) for ds, it in data.items()}))
+            rows.append((f"$\\alpha$ = {alpha:.1f} (default weights)", {ds: changed(it, alpha=alpha) for ds, it in data.items()}))
         lines = [label if vals is None else " & ".join([label] + [f"{vals[ds]:.1f}" for ds in DATASETS]) + " \\\\"
                  for label, vals in rows]
         os.makedirs(args.out, exist_ok=True)

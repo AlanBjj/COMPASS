@@ -11,8 +11,9 @@ Writes one .tex fragment per table (table rows only; the table environment lives
                           reuse the full model's runs and are marked (component inactive there)
   plans_/retrieval_/consistency_/oracle_/costds_<bb>_test.tex  the analyses of the paper
 and the data files of the figures (data/*.dat). Every tinted column is colored on its own scale (tab_tint.py): within each
-backbone, the median is white, better values are blue and worse values orange, shaded by rank; the paired-difference tables
-use zero as the white point and keep bold for significance.
+backbone, the median is white, better values are blue and worse values orange, shaded by rank, and the best and second-best
+values are set in bold and underlined. In the paired-difference tables, a gray value has an interval that includes zero; the
+oracle table is not tinted (retrospective bounds, in gray).
 A cell whose runs are not all judged yet prints \\tbd (a macro the paper defines), so a partial run
 never shows up as a number. HR and Acc are recomputed from the per-record judgments; population std
 over runs; the average is taken per run over the four datasets, then mean±std over runs.
@@ -295,10 +296,7 @@ def signif_table(root, n_boot=10000, seed=0, split="test"):
                 boots = [st.mean(rng.choices(d, k=len(d))) for _ in range(n_boot)]
             boots.sort()
             lo, hi = boots[int(0.025 * n_boot)], boots[int(0.975 * n_boot) - 1]
-            sig = hi < 0 or lo > 0
-            fmt = "[\\mnumbf]" if sig else "[\\mnum]"
-            cell = "\\hcl" + fmt + f"{{{point:.1f}}}{{0}}"
-            row.append(cell + f"\\ci{{{sgn(lo)}}}{{{sgn(hi)}}}")
+            row.append(signed_cell(point, lo, hi))
         lines.append(" & ".join(row) + " \\\\")
     return "\n".join(lines) + "\n"
 
@@ -309,22 +307,26 @@ PLAN_GROUPS = [("Direct", {"direct"}), ("Retrieval plans", {"direct_retrieval", 
                ("Decompose + fuse", {"decompose"}), ("Low-quality fallback", {"low_quality_fallback"})]
 
 
-def plans_table(root, split="test"):
-    """HR on the same questions, grouped by the plan COMPASS chose in run 1 (all datasets pooled)."""
+def plans_table(root, split="test", min_n=10):
+    """HR on the same questions, grouped by the plan COMPASS chose in run 1 (all datasets pooled). Rows: methods;
+    columns: plan groups with at least min_n questions; the first row gives each group's size (not tinted)."""
     ours = {ds: per_question(root, ds, FINAL, False, split) for ds in DATASETS}
-    refs = [("direct", True), ("self_consistency", True), ("targ", True)]
-    base = {k: {ds: per_question(root, ds, k, b, split) for ds in DATASETS} for k, b in refs}
+    refs = [("Direct (CoT)", "direct", True), ("Self-Consistency", "self_consistency", True), ("TARG", "targ", True)]
+    base = {k: {ds: per_question(root, ds, k, b, split) for ds in DATASETS} for _, k, b in refs}
     if not all(ours.values()) or not all(all(v.values()) for v in base.values()):
-        return "\\multicolumn{6}{l}{\\tbd} \\\\\n"
-    lines = []
+        return "\\multicolumn{5}{l}{\\tbd} \\\\\n"
+    groups = []
     for name, paths in PLAN_GROUPS:
         ids = [(ds, i) for ds in DATASETS for i, (h, p) in ours[ds].items() if p in paths]
-        if not ids:
-            continue
-        vals = [st.mean(ours[ds][i][0] for ds, i in ids)] + [st.mean(base[k][ds][i][0] for ds, i in ids) for k, _ in refs]
-        row = ["\\base " + name, f"{len(ids):,}".replace(",", "{,}")]
-        row += [tint(v, v) for v in vals]
-        lines.append(" & ".join(row) + " \\\\")
+        if len(ids) >= min_n:
+            groups.append((name, ids))
+    lines = [" & ".join(["\\multicolumn{1}{l}{Questions ($n$)}"] + [f"{len(ids):,}".replace(",", "{,}") for _, ids in groups])
+             + " \\\\", "\\midrule"]
+    for label, k, _ in refs:
+        lines.append(" & ".join(["\\base " + label] + [tint(st.mean(base[k][ds][i][0] for ds, i in ids), 0)
+                                                        for _, ids in groups]) + " \\\\")
+    lines.append(" & ".join(["\\ours COMPASS (ours)"] + [tint(st.mean(ours[ds][i][0] for ds, i in ids), 0)
+                                                         for _, ids in groups]) + " \\\\")
     return "\n".join(lines) + "\n"
 
 
@@ -475,7 +477,10 @@ def oracle_table(root):
         for ds in DATASETS:
             ids = set.intersection(*[set(pq[k][ds]) for k in ks])
             vals.append(st.mean(min(pq[k][ds][i][0] for k in ks) for i in ids))
-        lines.append(" & ".join([label] + [tint(v, v) for v in vals + [st.mean(vals)]]) + " \\\\")
+        cells = [f"{v:.1f}" for v in vals + [st.mean(vals)]]
+        if ks != [FINAL]:   # retrospective bounds, not methods: gray, never tinted
+            cells = [f"\\textcolor{{black!55}}{{{c}}}" for c in cells]
+        lines.append(" & ".join([label] + cells) + " \\\\")
     return "\n".join(lines) + "\n"
 
 
@@ -693,12 +698,19 @@ def main_table_grouped(results):
     return "\n".join(lines) + "\n"
 
 
+def signed_cell(point, lo, hi):
+    """A signed difference (lower favors COMPASS) with its 95% interval; gray when the interval includes zero."""
+    cell = f"\\hcls{{{point:.1f}}}{{0}}"
+    if not (hi < 0 or lo > 0):
+        cell = f"\\nsig{{{cell}}}"
+    return cell + f"\\ci{{{sgn(lo)}}}{{{sgn(hi)}}}"
+
+
 def ci_cell(point, boots, n_boot):
-    """Difference with its 95% bootstrap interval; bold if the interval excludes zero (as in signif_table)."""
+    """signed_cell from bootstrap draws."""
     boots = sorted(boots)
     lo, hi = boots[int(0.025 * n_boot)], boots[int(0.975 * n_boot) - 1]
-    fmt = "[\\mnumbf]" if (hi < 0 or lo > 0) else "[\\mnum]"
-    return "\\hcl" + fmt + f"{{{point:.1f}}}{{0}}" + f"\\ci{{{sgn(lo)}}}{{{sgn(hi)}}}"
+    return signed_cell(point, lo, hi)
 
 
 def signif_grouped_table(root, n_boot=10000, seed=0, split="test"):
@@ -762,11 +774,7 @@ def main():
     only = set(filter(None, args.only.split(",")))
 
     def write(name, text):
-        if name.startswith("signif"):
-            text = tint_fragment(text, center="zero", set_marks=False)   # bold = interval excludes zero
-        elif name.startswith("plans"):
-            text = tint_fragment(text, scope="row")
-        elif name.split("_")[0] in ("main", "ablation", "oracle"):
+        if name.split("_")[0] in ("main", "signif", "plans", "ablation"):
             text = tint_fragment(text)
         open(os.path.join(args.out, name), "w").write(text)
         print(f"{name}: {text.count(chr(92) + 'tbd')} cells pending")
