@@ -381,6 +381,48 @@ def cost_by_dataset(root):
     return "\n".join(lines) + "\n"
 
 
+
+def counted_fraction(path, key):
+    """Share of the LLM calls of a run that its token counters recorded. A run that was stopped and resumed
+    lost the counters of the questions finished before the restart. Self-Consistency (one call per sample)
+    and ReAct (one call per step) store their per-question call counts, so the share is exact for them. The
+    other methods return 1.0: their three runs agree, and their files were written in one pass."""
+    d = json.load(open(path))
+    counted = (d["metrics"].get("tokens") or {}).get("total_calls") or 0
+    if key == "self_consistency":
+        true = sum(r["trace"].get("samples_used", 0) for r in d["records"])
+    elif key == "react":
+        true = sum(len(r["trace"].get("steps") or []) for r in d["records"])
+    else:
+        return 1.0
+    return min(1.0, counted / true) if true else 1.0
+
+
+def cost_supp(results):
+    """Supplementary cost table: LLM calls and tokens per question (thousands), macro-averaged over the four
+    benchmarks, per backbone (columns) and method (rows); judge calls excluded. Runs whose counters missed part
+    of the calls (counted_fraction < 0.98) are scaled up by that fraction and marked with a dagger."""
+    lines, cols = [], {}
+    for bb in BACKBONES:
+        root = os.path.join(results, bb)
+        for label, key, b in METHODS:
+            calls, toks, est = [], [], False
+            for ds in DATASETS:
+                files = run_files(root, ds, key, b, "test")[:3]
+                c, t = [], []
+                for f in files:
+                    m = json.load(open(f))["metrics"]
+                    frac = counted_fraction(f, key)
+                    est |= frac < 0.98
+                    c.append((m["tokens"]["total_calls"] / m["n_total"]) / frac)
+                    t.append(m["avg_tokens_per_query"] / frac)
+                calls.append(st.mean(c)); toks.append(st.mean(t))
+            mark = "$^\\dagger$" if est else ""
+            cols[(bb, key)] = f"{st.mean(calls):.1f}{mark} & {st.mean(toks) / 1000:.1f}{mark}"
+    for label, key, _ in METHODS:
+        lines.append(" & ".join([("\\ours " if key == FINAL else "\\base ") + label] + [cols[(bb, key)] for bb in BACKBONES]) + " \\\\")
+    return "\n".join(lines) + "\n"
+
 # (parameter, [(value, run-name prefix of the dev runs; None = the default setting)])
 SENS = [("$\\tau$", [("0.40", "tau0.40"), ("0.45", "tau0.45"), ("0.50", "tau0.50"), ("0.55", None), ("0.60", "tau0.60")]),
         ("$\\alpha$", [("0.2", "alpha0.2"), ("0.3", "alpha0.3"), ("0.4", None), ("0.5", "alpha0.5"), ("0.6", "alpha0.6")]),
@@ -784,6 +826,7 @@ def main():
                              ("consistency", consistency_table)):
                 jobs[f"{name}_{bb}_test.tex"] = (lambda fn=fn, root=root: fn(root))
         jobs["ablation_qwen3-8b_test.tex"] = lambda: ablation_table(os.path.join(args.results, "qwen3-8b"))
+        jobs["cost_supp_test.tex"] = lambda: cost_supp(args.results)
         for name in sorted(only):
             write(name, jobs[name]())
         return
@@ -808,6 +851,7 @@ def main():
     export_figure_data(args.results, os.path.join(args.out, "data"))
     print("figure data written to", os.path.join(args.out, "data"))
     write("ablation_qwen3-8b_test.tex", ablation_table(os.path.join(args.results, "qwen3-8b")))
+    write("cost_supp_test.tex", cost_supp(args.results))
 
 
 if __name__ == "__main__":

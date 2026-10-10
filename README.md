@@ -86,6 +86,7 @@ python scripts/paper_tables.py --results results --out paper_tables/    # every 
 python scripts/gate_weight_check.py --results results --out paper_tables/  # gate decisions under other rule weights (Table S3)
 python scripts/summarize.py --dir results/qwen3-8b --split test         # one-screen overview
 python scripts/result_analyses.py --results results --data data           # analyses cited in the results and parameter checks
+python scripts/freshqa_dates.py --results results --data data             # FreshQA: snippets dated after the reference date (Section S3)
 python scripts/second_judge.py --results results --analyze-only          # second judge vs. main judge
 ```
 
