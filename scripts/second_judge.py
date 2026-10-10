@@ -1,8 +1,8 @@
 """Second-judge check: re-judge a stratified sample of the test answers with a judge from another model
-family, and compare it with the main judge (Qwen3-32B) and with the human annotators.
+family, and compare it with the main judge (Qwen3-32B).
 
 Sample: from the first test run, 24 answers per (backbone, method, benchmark) cell, i.e. 3 x 7 x 4 x 24 =
-2,016 answers (seed 20261009), plus the 160 human-annotated items of human_eval/. The second judge gets
+2,016 answers (seed 20261009). The second judge gets
 exactly what the main judge gets: the same prompt, system message, reference block, and parser
 (compass.eval.judge), with reference answers reloaded from the dataset by id as in judge_generated.py.
 
@@ -12,7 +12,7 @@ The paper used DeepSeek-V4-Pro through its OpenAI-compatible API, non-thinking, 
     python scripts/second_judge.py --results results            # judge (resumes) and analyze
     python scripts/second_judge.py --results results --analyze-only
 
-The labels reported in the paper are in human_eval/second_judge.jsonl (the default --out); labels already
+The labels reported in the paper are in judge_check/second_judge.jsonl (the default --out); labels already
 in --out are kept, so running the first command on a fresh checkout only analyzes them.
 """
 
@@ -20,12 +20,10 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import csv
 import json
 import os
 import random
 import sys
-from collections import Counter
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from compass.datasets import load_dataset  # noqa: E402
@@ -41,7 +39,7 @@ PATHS = {
     "strategyqa": "data/strategyqa/strategyqa.json",
     "freshqa": "data/freshqa/freshqa.json",
 }
-HE = "human_eval"
+OUT_DIR = "judge_check"
 
 
 def run_file(results: str, bb: str, method: str, ds: str) -> str:
@@ -51,7 +49,7 @@ def run_file(results: str, bb: str, method: str, ds: str) -> str:
 
 
 def build_items(results: str, per_cell: int, seed: int) -> list:
-    """The stratified sample (in a fixed order, so the seed reproduces it) and the human-annotated items."""
+    """The stratified sample, in a fixed order, so that the seed reproduces it."""
     rng = random.Random(seed)
     items = []
     for bb in BACKBONES:
@@ -61,18 +59,6 @@ def build_items(results: str, per_cell: int, seed: int) -> list:
                     items.append({"key": f"{bb}|{m}|{ds}|{r['id']}", "item": "sample", "backbone": bb,
                                   "method": m, "dataset": ds, "id": str(r["id"]), "answer": r["answer"] or "",
                                   "main_judge": r["judgment"]["hallucination"]})
-    truth = json.load(open(f"{HE}/_ground_truth.json"))
-    labels, answers = {}, {}
-    for a in (1, 2, 3):
-        for r in csv.DictReader(open(f"{HE}/annotator_{a}.csv")):
-            labels.setdefault(r["seq"], []).append(1 if r["is_hallucination(yes/no)"].strip().lower() == "yes" else 0)
-            answers[r["seq"]] = r["model_answer"]
-    for seq in sorted(truth):
-        t = truth[seq]
-        items.append({"key": f"human|{seq}", "item": "human", "seq": seq, "dataset": t["dataset"],
-                      "id": str(t["id"]), "answer": answers[seq],
-                      "human_majority": int(Counter(labels[seq]).most_common(1)[0][0]),
-                      "api_judge": int(t["judge_hallucination"])})
     return items
 
 
@@ -129,11 +115,6 @@ def analyze(path: str) -> None:
     rows = [json.loads(line) for line in open(path)]
     ok = [r for r in rows if r["second_judge"] in (0, 1)]
     print(f"\n{len(rows)} labels, {len(rows) - len(ok)} unparseable")
-    human = [r for r in ok if r["item"] == "human"]
-    print("\nHuman-annotated items: agreement with the annotators' majority")
-    print("  second judge  ", agreement([(r["second_judge"], r["human_majority"]) for r in human]))
-    for ds in DATASETS:
-        print(f"    {ds:11s} ", agreement([(r["second_judge"], r["human_majority"]) for r in human if r["dataset"] == ds]))
     sample = [r for r in ok if r["item"] == "sample" and r["main_judge"] in (0, 1)]
     print("\nStratified sample: second judge vs. main judge")
     print("  all           ", agreement([(r["second_judge"], r["main_judge"]) for r in sample]))
@@ -167,7 +148,7 @@ def analyze(path: str) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--results", default="results")
-    ap.add_argument("--out", default=f"{HE}/second_judge.jsonl")
+    ap.add_argument("--out", default=f"{OUT_DIR}/second_judge.jsonl")
     ap.add_argument("--model", default="deepseek-v4-pro")
     ap.add_argument("--base-url", default="https://api.deepseek.com")
     ap.add_argument("--api-key-env", default="DEEPSEEK_API_KEY")

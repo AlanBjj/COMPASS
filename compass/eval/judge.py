@@ -3,8 +3,8 @@ Rate (binary) and Accuracy (0-100) — in ONE call, for all four datasets.
 
 The reference is adapted per dataset, and a parse failure is marked invalid
 (hallucination/accuracy = -1) and excluded from metrics rather than silently defaulted. The judge
-runs on a SEPARATE client (judge endpoint) and bills the 'judge' role. The human validation of the
-judge is in human_eval/ and scripts/judge_calibration.py.
+runs on a SEPARATE client (judge endpoint) and bills the 'judge' role. A second judge from another
+model family re-judges a stratified sample of the answers in scripts/second_judge.py (labels in judge_check/).
 """
 
 from __future__ import annotations

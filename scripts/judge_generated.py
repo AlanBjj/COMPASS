@@ -11,7 +11,7 @@ judge over the stored answers. It reproduces the in-run judging exactly:
   * judge client built from the generation file's meta.effective_config.models.judge, the same way
     compass/run.py builds it (local vLLM model, thinking disabled, no OPENAI_* environment);
   * reference answers come from the dataset itself (reloaded by id), not from the stored `gold`, so
-    the judge input is identical to the in-run judge (same as scripts/judge_calibration.py);
+    the judge input is identical to the in-run judge (same as scripts/second_judge.py);
   * compass.eval.judge_all (same prompt and parser); metrics via compass.eval.metrics.aggregate.
 
 Safety: the generation file is never modified. A complete final file is skipped; an incomplete one

@@ -10,7 +10,9 @@ Writes one .tex fragment per table (table rows only; the table environment lives
   ablation_qwen3-8b_test.tex  HR (delta vs. full) of the ablations; datasets an ablation was not run on
                           reuse the full model's runs and are marked (component inactive there)
   plans_/retrieval_/consistency_/oracle_/costds_<bb>_test.tex  the analyses of the paper
-and the data files of the figures (data/*.dat).
+and the data files of the figures (data/*.dat). Every tinted column is colored on its own scale (tab_tint.py): within each
+backbone, the median is white, better values are blue and worse values orange, shaded by rank; the paired-difference tables
+use zero as the white point and keep bold for significance.
 A cell whose runs are not all judged yet prints \\tbd (a macro the paper defines), so a partial run
 never shows up as a number. HR and Acc are recomputed from the per-record judgments; population std
 over runs; the average is taken per run over the four datasets, then mean±std over runs.
@@ -23,6 +25,10 @@ import glob
 import json
 import os
 import statistics as st
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from tab_tint import tint_fragment   # noqa: E402  (per-column heat-map tints, best bold / second underlined)
 
 DATASETS = ["truthfulqa", "gsm8k", "strategyqa", "freshqa"]
 N_TEST = {"truthfulqa": 717, "gsm8k": 1219, "strategyqa": 2190, "freshqa": 500}
@@ -316,9 +322,8 @@ def plans_table(root, split="test"):
         if not ids:
             continue
         vals = [st.mean(ours[ds][i][0] for ds, i in ids)] + [st.mean(base[k][ds][i][0] for ds, i in ids) for k, _ in refs]
-        best = min(vals)
         row = ["\\base " + name, f"{len(ids):,}".replace(",", "{,}")]
-        row += [f"\\textbf{{{v:.1f}}}" if v == best else f"{v:.1f}" for v in vals]
+        row += [tint(v, v) for v in vals]
         lines.append(" & ".join(row) + " \\\\")
     return "\n".join(lines) + "\n"
 
@@ -470,7 +475,7 @@ def oracle_table(root):
         for ds in DATASETS:
             ids = set.intersection(*[set(pq[k][ds]) for k in ks])
             vals.append(st.mean(min(pq[k][ds][i][0] for k in ks) for i in ids))
-        lines.append(" & ".join([label] + [f"{v:.1f}" for v in vals] + [f"{st.mean(vals):.1f}"]) + " \\\\")
+        lines.append(" & ".join([label] + [tint(v, v) for v in vals + [st.mean(vals)]]) + " \\\\")
     return "\n".join(lines) + "\n"
 
 
@@ -662,6 +667,13 @@ def main_table_grouped(results):
                     cols[g][key] = None
         means = {c: {k: st.mean(r["hr"] for r in runs) for k, runs in col.items() if runs} for c, col in cols.items()}
         marks = {c: ranks_of(means[c]) if all(col.values()) else {} for c, col in cols.items()}
+        mcs = {}
+        for key, cells in data.items():
+            if all(cells[ds] for ds in DATASETS):
+                n = min(len(cells[ds]) for ds in DATASETS)
+                acc = [st.mean(cells[ds][i]["acc"] for ds in DATASETS) for i in range(n)
+                       if all(cells[ds][i]["acc"] is not None for ds in DATASETS)]
+                mcs[key] = st.mean(acc) if acc else None
         lines.append(f"\\grp{{9}}{{{BB_NAMES[bb]}}} \\\\")
         for label, key, _ in METHODS:
             row = [("\\ours " if key == FINAL else "\\base ") + label]
@@ -673,12 +685,8 @@ def main_table_grouped(results):
                     row.append(tint(m, ref, marks[c].get(key)) + f"\\sd{{{sd:.1f}}}")
                 else:
                     row.append("\\tbd")
-            cells = data[key]
-            if all(cells[ds] for ds in DATASETS):
-                n = min(len(cells[ds]) for ds in DATASETS)
-                acc = [st.mean(cells[ds][i]["acc"] for ds in DATASETS) for i in range(n)
-                       if all(cells[ds][i]["acc"] is not None for ds in DATASETS)]
-                row.append(f"{st.mean(acc):.1f}" if acc else "\\tbd")
+            if mcs.get(key) is not None and mcs.get("direct") is not None:
+                row.append(tint(mcs[key], mcs["direct"], lower_better=False))
             else:
                 row.append("\\tbd")
             lines.append(" & ".join(row) + " \\\\")
@@ -748,12 +756,32 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", default="results")
     ap.add_argument("--out", default="paper_tables")
+    ap.add_argument("--only", default="", help="comma-separated table names (e.g. main_grouped_test.tex); default: all")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
+    only = set(filter(None, args.only.split(",")))
 
     def write(name, text):
+        if name.startswith("signif"):
+            text = tint_fragment(text, center="zero", set_marks=False)   # bold = interval excludes zero
+        elif name.startswith("plans"):
+            text = tint_fragment(text, scope="row")
+        elif name.split("_")[0] in ("main", "ablation", "oracle"):
+            text = tint_fragment(text)
         open(os.path.join(args.out, name), "w").write(text)
         print(f"{name}: {text.count(chr(92) + 'tbd')} cells pending")
+    if only:   # rebuild only the named tables
+        jobs = {"main_grouped_test.tex": lambda: main_table_grouped(args.results),
+                "signif_grouped_test.tex": lambda: signif_grouped(args.results)}
+        for bb in BACKBONES:
+            root = os.path.join(args.results, bb)
+            for name, fn in (("plans", plans_table), ("oracle", oracle_table), ("retrieval", retrieval_table),
+                             ("consistency", consistency_table)):
+                jobs[f"{name}_{bb}_test.tex"] = (lambda fn=fn, root=root: fn(root))
+        jobs["ablation_qwen3-8b_test.tex"] = lambda: ablation_table(os.path.join(args.results, "qwen3-8b"))
+        for name in sorted(only):
+            write(name, jobs[name]())
+        return
     for bb in BACKBONES:
         root = os.path.join(args.results, bb)
         text, data, avg = main_table(root, "test")
